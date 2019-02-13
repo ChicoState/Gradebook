@@ -1,0 +1,23 @@
+{
+  "name": "gradebook",
+  "version": "1.0.0",
+  "description": "An easy to use web based Gradebook",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChicoState/Gradebook.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChicoState/Gradebook/issues"
+  },
+  "homepage": "https://github.com/ChicoState/Gradebook#readme",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mongoose": "^5.4.11"
+  }
+}

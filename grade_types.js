@@ -63,8 +63,10 @@ class Visitor {
 		    grd.possible += cmp.possible;
 		} else {
 		    grd.future += cmp.possible;
-		    if (cmp.type == types.UNIT)
-			grd.future += grd.future;
+		    if (cmp.type == types.UNIT) {
+			grd.earned += cmp.earned;
+			grd.possible += cmp.possible;
+		    }
 		}
 	    }
 	    this.indent = tmp;

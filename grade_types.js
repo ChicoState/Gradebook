@@ -6,16 +6,17 @@ const types = {
 }
 
 class Grade {
-    constructor(type) {
+    constructor(type, taken, earned, possible) {
 	this.type = type;
+	this.taken = taken;
+	this.earned = earned;
+	this.possible = possible;
     }
 }
 
 class Quiz extends Grade {
-    constructor(earned, possible) {
-	super(types.QUIZ);
-	this.earned = earned;
-	this.possible = possible;
+    constructor(taken, earned, possible) {
+	super(types.QUIZ, taken, earned, possible);
     }
 
     accept(visitor) {
@@ -25,8 +26,9 @@ class Quiz extends Grade {
 
 class Unit extends Grade {
     constructor(list) {
-	super(types.UNIT);
+	super(types.UNIT, false, 0, 0);
 	this.list = list;
+	this.future = 0;
     }
 
     accept(visitor) {
@@ -37,24 +39,39 @@ class Unit extends Grade {
 class Visitor {
     constructor() {
 	this.table = "";
+	this.indent = "";
     }
 
     visit(grd) {
 	switch (grd.type) {
 	case types.QUIZ:
-	    this.table += " QUIZ (" + grd.earned.toString() + " / " + grd.possible.toString() + ")\n";
+	    if (grd.taken) {
+		this.table += " QUIZ (" + grd.earned.toString() + " / " + grd.possible.toString() + ")\n";
+	    } else {
+		this.table += " PENDING QUIZ " + grd.possible.toString() + "\n";
+	    }
 	    break;
 	case types.UNIT:
-	    let total_earned = 0;
-	    let total_possible = 0;
-	    this.table += "UNIT ----------\n";
+	    let future_possible = 0;
+	    this.table += "\n" + this.indent + "UNIT ----------\n";
+	    let tmp = this.indent;
+	    this.indent += " ";
 	    for (const cmp of grd.list) {
 		cmp.accept(this);
-		total_earned += cmp.earned;
-		total_possible += cmp.possible;
+		if (cmp.taken) {
+		    grd.earned += cmp.earned;
+		    grd.possible += cmp.possible;
+		} else {
+		    grd.future += cmp.possible;
+		    if (cmp.type == types.UNIT)
+			grd.future += grd.future;
+		}
 	    }
-	    this.table += "      (" + total_earned.toString() + " / " + total_possible.toString() + ")\n";
-	    this.table += "---------------\n";
+	    this.indent = tmp;
+	    this.table += this.indent + "---------------\n";
+	    this.table += this.indent + "Running: (" + grd.earned.toString() + " / " + grd.possible.toString() + ")\n";
+	    this.table += this.indent + "Current: (" + grd.earned.toString() + " / " + (grd.possible + grd.future).toString() + ")\n";
+	    this.table += this.indent + "----------- END\n\n";
 	    break;
 	}
     }
@@ -62,9 +79,16 @@ class Visitor {
 	
 const g = new Unit(
     [
-	new Quiz(28, 30),
-	new Quiz(30, 30),
-	new Quiz(29, 30)
+	new Quiz(true, 28, 30),
+	new Quiz(true, 30, 30),
+	new Unit(
+	    [
+		new Quiz(true, 9, 10),
+		new Quiz(false, 0, 10)
+	    ]
+	),
+	new Quiz(true, 29, 30),
+	new Quiz(false, 0, 30)
     ]
 );
 const v = new Visitor();

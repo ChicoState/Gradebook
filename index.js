@@ -12,6 +12,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const jwt = require('jsonwebtoken')
+const cors = require('cors')
 
 // import mongoose models
 let User = require('./models/user')
@@ -27,6 +28,9 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
 });
 
 let port = 3993
+
+// enable cors
+app.use(cors({ origin: true }))
 
 // start server on port 3993
 app.listen(port)

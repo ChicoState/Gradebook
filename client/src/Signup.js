@@ -2,13 +2,15 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import './AuthForm.css'
 
-class Login extends Component {
+class Signup extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      name: '', 
       email: '', 
-      password: '', 
+      password: '',
+      student: true, 
       message: ""
     }
 
@@ -28,15 +30,23 @@ class Login extends Component {
 
   async handleSubmit(event) {
     event.preventDefault()
-    let res  = await axios.post('http://localhost:3993/api/login', this.state)
-    let message = res.data.auth ? "Logged in!" : "Try again!"
-    this.setState({ message:  message })
+    let res  = await axios.post('http://localhost:3993/api/user', this.state)
+    this.setState({ message:  res.data })
   }
 
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
-        <h2> Log In </h2>
+        <h2> Sign Up </h2>
+        <label> Name: </label>
+        <input 
+          className="form-control" 
+          type="text" 
+          name="name" 
+          placeholder="John Appleseed"
+          value={this.state.name} 
+          onChange={this.handleInputChange} 
+        />
 
         <label> Email: </label>
         <input 
@@ -61,7 +71,7 @@ class Login extends Component {
         <input 
           type="submit" 
           className="btn btn-primary mb-2" 
-          value="Log In" 
+          value="Sign Up" 
         />
         { this.state.message && 
           <div className="alert alert-info">
@@ -73,4 +83,4 @@ class Login extends Component {
   }
 }
 
-export default Login
+export default Signup

@@ -62,9 +62,10 @@ router.get('/protected', authCheck, (req, res) => {
 // login route
 router.post('/login', async function(req, res) {
 
+  let cookie_domain = 'localhost'
+
   let user = await User.findOne({ email: req.body.email })
   if (!user) res.send("User not found")
-
   else {
     bcrypt.compare(req.body.password, user.password).then(function(validPassword) {
       if (!validPassword) res.status(400).send({ auth: false, error: 'Incorrect password.', token: null })

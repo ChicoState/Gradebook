@@ -1,0 +1,12 @@
+h2 {
+  text-align: left;
+}
+
+label {
+  display: block;
+  text-align: left;
+}
+
+.form-control {
+  margin-bottom: 10px;
+}

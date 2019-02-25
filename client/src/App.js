@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Signup from './Signup.js'
 import Login from './Login.js'
+import Teacher from './Teacher.js'
+import Account from './Account.js'
 import './App.css';
 
 const App = () => (
@@ -25,6 +27,8 @@ const App = () => (
           <Route exact path="/" component={Home} />
           <Route path="/signup" component={Signup} />
           <Route path="/login" component={Login} />
+          <Route path="/teacher" component={Teacher} />
+          <Route path="/account" component={Account} />
         </div>
       </div>
 

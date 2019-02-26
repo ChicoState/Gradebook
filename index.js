@@ -112,6 +112,10 @@ router.post('/user', async function(req, res) {
   }
 }); 
 
+router.get('/teach', function (req, res) {
+  res.send('GET request to the homepage')
+})
+
 // serve all routes with the /api prefix
 app.use('/api', router)
 

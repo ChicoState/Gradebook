@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router'
 import axios from 'axios'
 import './AuthForm.css'
-import { setToken } from './auth'
+import { setToken, isLoggedIn } from './auth'
 
 class Login extends Component {
 
@@ -31,11 +32,15 @@ class Login extends Component {
     event.preventDefault()
     let res  = await axios.post('http://localhost:3993/api/login', this.state)
     let message = res.data.auth ? "Logged in!" : "Try again!"
-    if (res.data.auth) setToken(res.data.token)
+    if (res.data.auth) { 
+      setToken(res.data.token)
+      window.location.reload()
+    }
     this.setState({ message: message })
   }
 
   render() {
+    if (isLoggedIn()) return (<Redirect to="/account" />)
     return (
       <form onSubmit={this.handleSubmit}>
         <h2> Log In </h2>

@@ -24,6 +24,16 @@ export function isLoggedIn() {
   return authorized
 }
 
+export function resetToken () {
+  cookies.remove('token', { path: '/' })
+  cookies.remove('csrf_token', { path: '/' })
+}
+
+export function logout() {
+  resetToken()
+  window.location.reload()
+}
+
 // check if token is expired
 export function isTokenExpired() {
   const expirationDate = getTokenExpirationDate(getToken())

@@ -6,13 +6,12 @@ import Teacher from './Teach.js'
 import Account from './Account.js'
 import './App.css';
 
-import { isLoggedIn } from './auth'
+import { isLoggedIn, logout } from './auth'
 
 class App extends React.Component {
 
   constructor(props) {
     super(props)
-    console.log(isLoggedIn())
     this.state = {
       loggedIn: isLoggedIn()
     }
@@ -42,6 +41,9 @@ class App extends React.Component {
                 <div> 
                   <li className="nav-item">
                     <Link to="/account">Account</Link>
+                  </li>
+                  <li className="nav-item">
+                    <a href="#" onClick={logout}>Log Out</a>
                   </li>
                 </div>
               }

@@ -102,7 +102,8 @@ router.post('/user', async function(req, res) {
     let newUser = await User.create({
       password: hashedPassword,
       email: req.body.email,
-      name: req.body.name
+      name: req.body.name, 
+      student: req.body.student
     })
 
     // create auth token

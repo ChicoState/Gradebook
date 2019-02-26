@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
+import { Route, Redirect } from 'react-router'
 import axios from 'axios'
-import { getHeader } from './auth'
+import { getHeader, isLoggedIn } from './auth'
 
 class Account extends Component {
   constructor(props) {
@@ -16,7 +17,8 @@ class Account extends Component {
   }
 
   render () {
-    return (
+    return !isLoggedIn() ? <Redirect to="/login" /> : 
+    (
       <div> 
         <div> {this.state.user.name} </div>
         <div> Your email: {this.state.user.email} </div>

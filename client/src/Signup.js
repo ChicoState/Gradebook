@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import './AuthForm.css'
+import { Redirect } from 'react-router'
 
 class Signup extends Component {
 
@@ -11,7 +12,8 @@ class Signup extends Component {
       email: '', 
       password: '',
       student: true, 
-      message: ""
+      message: "", 
+      signedUp: false
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -31,10 +33,12 @@ class Signup extends Component {
   async handleSubmit(event) {
     event.preventDefault()
     let res  = await axios.post('http://localhost:3993/api/user', this.state)
-    this.setState({ message:  res.data })
+    if (res.data.auth) this.setState({ signedUp: true })
+    else this.setState({ message: "Something went wrong" })
   }
 
   render() {
+    if (this.state.signedUp) return (<Redirect to="/account" />)
     return (
       <form onSubmit={this.handleSubmit}>
         <h2> Sign Up </h2>

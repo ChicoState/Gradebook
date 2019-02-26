@@ -1,0 +1,13 @@
+.navbar-nav {
+  width: auto;
+  flex-direction: row;
+}
+
+.nav-item {
+  display: inline-block;
+  margin: 0 13px;
+}
+
+.nav-item a {
+  color: white;
+}

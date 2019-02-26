@@ -1,9 +1,9 @@
 let mongoose = require('mongoose')
 
 let GradeSchema = mongoose.Schema({
-  class: String,
-  student: String,
-  grade: String, 
+  student_id: String,
+  assignment_id: String,
+  score: Number
 })
 
 module.exports = mongoose.model('Grade', GradeSchema);

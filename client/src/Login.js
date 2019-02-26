@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import './AuthForm.css'
+import { setToken } from './auth'
 
 class Login extends Component {
 
@@ -30,7 +31,8 @@ class Login extends Component {
     event.preventDefault()
     let res  = await axios.post('http://localhost:3993/api/login', this.state)
     let message = res.data.auth ? "Logged in!" : "Try again!"
-    this.setState({ message:  message })
+    if (res.data.auth) setToken(res.data.token)
+    this.setState({ message: message })
   }
 
   render() {

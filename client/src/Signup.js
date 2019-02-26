@@ -68,6 +68,14 @@ class Signup extends Component {
           onChange={this.handleInputChange} 
         />
 
+        <div className="d-flex align-items-center mb-2">
+          <label className="mr-2 mb-0">Are you a teacher?</label>
+          <input 
+            type="checkbox"
+            value={!this.state.student}
+          />
+        </div>
+
         <input 
           type="submit" 
           className="btn btn-primary mb-2" 

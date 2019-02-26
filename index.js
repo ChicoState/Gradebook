@@ -54,7 +54,7 @@ router.get('/', (req, res) => {
   res.send("Hello world!")
 })
 
-// testing auth
+// get your own profile data
 router.get('/me', authCheck, async (req, res) => {
   try {
     let user = await User.findById(req.userId)

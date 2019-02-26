@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Signup from './Signup.js'
 import Login from './Login.js'
-import Teacher from './Teacher.js'
+import Teacher from './Teach.js'
 import Account from './Account.js'
 import './App.css';
 

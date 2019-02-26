@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
 let port = 3993
 
 // enable cors
-app.use(cors({ origin: true }))
+app.use(cors({ credentials: true, origin: true }))
 
 // start server on port 3993
 app.listen(port)
@@ -55,8 +55,11 @@ router.get('/', (req, res) => {
 })
 
 // testing auth
-router.get('/protected', authCheck, (req, res) => {
-  res.send(req.userId)
+router.get('/me', authCheck, async (req, res) => {
+  try {
+    let user = await User.findById(req.userId)
+    res.send(user)
+  } catch (e) { res.send(e) }
 })
 
 // login route

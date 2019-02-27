@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router'
 import { getHeader, isLoggedIn } from '../auth'
 import axios from 'axios'
+import './Classes.css';
 
 class Classes extends Component {
 
@@ -44,31 +45,44 @@ class Classes extends Component {
 
   render () {
     return (
-      <div>  
-        <input 
-          className="form-control" 
-          name="name"
-          type="text" 
-          placeholder="Class Name"
-          value={this.state.name} 
-          onChange={this.handleInputChange} 
-        />
-        <input 
-          className="form-control" 
-          name="custom_id"
-          type="text" 
-          placeholder="Custom Identifier (E.G. CSCI101)"
-          value={this.state.custom_id} 
-          onChange={this.handleInputChange} 
-        />
-        <div className="btn btn-primary" onClick={this.createClass}> Create </div>
-
+      <div> 
         <h2 className="mt-2 mb-2"> Classes </h2> 
-        <div className="classes"> 
+        <div className="classes container mb-2"> 
+          <div className="header row py-1">
+            <div className="col"> Name </div> 
+            <div className="col"> Identifier </div> 
+          </div>
           { this.state.classes.map((c) => {
-            return <div key={c._id}>{ c.name } : { c.custom_id }</div>
+            return (
+              <div className="class row py-2" key={c._id}>
+                <div className="col"> { c.name } </div>
+                <div className="col"> { c.custom_id } </div> 
+              </div>
+            )
           })}
+
+          <div className="class row py-2">
+            <input 
+              className="form-control col" 
+              name="name"
+              type="text" 
+              placeholder="New class..."
+              value={this.state.name} 
+              onChange={this.handleInputChange} 
+            />
+            <input 
+              className="form-control col" 
+              name="custom_id"
+              type="text" 
+              placeholder="E.G. CSCI101"
+              value={this.state.custom_id} 
+              onChange={this.handleInputChange} 
+            />
+          </div> 
+
         </div>
+
+        <div className="btn btn-primary" onClick={this.createClass}> Create </div>
 
       </div>
     )

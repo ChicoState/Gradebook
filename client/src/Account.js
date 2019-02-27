@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Route, Redirect } from 'react-router'
+import { Route, Redirect, Link } from 'react-router-dom'
 import axios from 'axios'
 import { getHeader, isLoggedIn } from './auth'
 
@@ -20,9 +20,13 @@ class Account extends Component {
     return !isLoggedIn() ? <Redirect to="/login" /> : 
     (
       <div> 
-        <div> {this.state.user.name} </div>
+        <div> Hello <strong>{this.state.user.name}</strong>! </div>
         <div> Your email: {this.state.user.email} </div>
-        <div> You're a { this.state.user.student ? "student" : "teacher" } </div>
+        <div> 
+          { !this.state.user.student && ( 
+            <Link to="/teacher/classes">Your Classes <i class="fas fa-chalkboard-teacher"></i> </Link>
+          )} 
+        </div>
       </div>
     )
   }

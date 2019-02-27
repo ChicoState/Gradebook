@@ -73,10 +73,10 @@ class Signup extends Component {
         />
 
         <div className="d-flex align-items-center mb-2">
-          <label className="mr-2 mb-0">Are you a teacher?</label>
+          <label className="mr-2 mb-0">Are you a student?</label>
           <input 
             type="checkbox"
-            value={!this.state.student}
+            value={this.state.student}
           />
         </div>
 

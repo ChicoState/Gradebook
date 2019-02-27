@@ -11,7 +11,7 @@ class Signup extends Component {
       name: '', 
       email: '', 
       password: '',
-      student: true, 
+      student: false, 
       message: "", 
       signedUp: false
     }
@@ -76,7 +76,9 @@ class Signup extends Component {
           <label className="mr-2 mb-0">Are you a student?</label>
           <input 
             type="checkbox"
+            name="student"
             value={this.state.student}
+            onChange={this.handleInputChange}
           />
         </div>
 

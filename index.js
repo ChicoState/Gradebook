@@ -99,6 +99,7 @@ router.post('/user', async function(req, res) {
     // hash password
     var hashedPassword = bcrypt.hashSync(req.body.password, 8)
 
+    console.log(req.body)
     let newUser = await User.create({
       password: hashedPassword,
       email: req.body.email,

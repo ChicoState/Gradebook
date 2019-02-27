@@ -16,9 +16,10 @@ const cors = require('cors')
 
 // import mongoose models
 let User = require('./models/user')
+let Class = require('./models/class')
 
 // import auth middleware 
-let authCheck = require('./auth')
+let { authCheck, teacherCheck } = require('./auth')
 
 // connect to mongoDB database
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
@@ -49,10 +50,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // use cookieParser 
 app.use(cookieParser())
 
-//
-router.get('/', (req, res) => {
-  res.send("Hello world!")
-})
+/* ===== GET ROUTES ===== */
 
 // get your own profile data
 router.get('/me', authCheck, async (req, res) => {
@@ -60,6 +58,30 @@ router.get('/me', authCheck, async (req, res) => {
     let user = await User.findById(req.userId)
     res.send(user)
   } catch (e) { res.send(e) }
+})
+
+// get a teacher's classes
+router.get('/teacher/classes', teacherCheck, async (req, res, next) => {
+  try {
+    let classes = await Class.find({ teacher_id: req.userId })
+    res.send(classes)
+  } catch (e) { next(e) }
+})
+
+/* ===== POST ROUTES ===== */
+
+// create a class
+router.post('/class', teacherCheck, async (req, res, next) => {
+  try {
+    let exists = await Class.findOne({ custom_id: req.body.custom_id })
+    if (exists) res.send("Class already exists")
+    else {
+      let newClass = await Class.create(req.body)
+      newClass.teacher_id = req.userId
+      await newClass.save()
+      res.send(newClass)
+    }
+  } catch (e) { next(e) }
 })
 
 // login route
@@ -116,10 +138,6 @@ router.post('/user', async function(req, res) {
       .send({ auth: true, token: token });
   }
 }); 
-
-router.get('/teach', function (req, res) {
-  res.send('GET request to the homepage')
-})
 
 // serve all routes with the /api prefix
 app.use('/api', router)

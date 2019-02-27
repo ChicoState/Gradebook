@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Signup from './Signup.js'
 import Login from './Login.js'
 import Teacher from './Teach.js'
+import Classes from './teacher/Classes.js'
 import Account from './Account.js'
 import './App.css';
 
@@ -55,7 +56,8 @@ class App extends React.Component {
               <Route exact path="/" component={Home} />
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
-              <Route path="/teacher" component={Teacher} />
+              <Route exact path="/teacher" component={Teacher} />
+              <Route path="/teacher/classes" component={Classes} />
               <Route path="/account" component={Account} />
             </div>
           </div>

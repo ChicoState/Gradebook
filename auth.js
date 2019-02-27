@@ -26,10 +26,12 @@ function authCheck(req, res, next) {
 }
 
 async function teacherCheck(req, res, next) {
-  authCheck(req, res, next)
-  let user = await User.findById(req.userId)
-  if (user.student) return res.status(403).send({ auth: false, message: 'You are not a teacher.' })
-  next()
+  try {
+    authCheck(req, res, next)
+    let user = await User.findById(req.userId)
+    if (user.student) return res.status(403).send({ auth: false, message: 'You are not a teacher.' })
+    next()
+  } catch(e) { next(e) }
 }
 
 module.exports = { authCheck, teacherCheck }

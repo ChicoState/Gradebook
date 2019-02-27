@@ -33,9 +33,13 @@ class Classes extends Component {
   }
 
   async createClass() {
-    let res = await axios.post('class', this.state, { headers: getHeader() })
-    let updated = this.state.classes.concat(res.data)
-    this.setState({ classes: updated })
+    let res = await axios.post('class', {
+      name: this.state.name, custom_id: this.state.custom_id
+    }, { headers: getHeader() })
+    if (res.data._id) {
+      let updated = this.state.classes.concat(res.data)
+      this.setState({ classes: updated })
+    }
   }
 
   render () {
@@ -62,7 +66,7 @@ class Classes extends Component {
         <h2 className="mt-2 mb-2"> Classes </h2> 
         <div className="classes"> 
           { this.state.classes.map((c) => {
-            return <div>{ c.name } : { c.custom_id }</div>
+            return <div key={c._id}>{ c.name } : { c.custom_id }</div>
           })}
         </div>
 

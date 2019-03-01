@@ -73,15 +73,15 @@ router.get('/teacher/classes', teacherCheck, async (req, res, next) => {
 router.get('/class/:custom_id', teacherCheck, async (req, res, next) => {
   try {
     let c = await Class.findOne({ teacher_id: req.userId, custom_id: req.params.custom_id })
-    if (!c) res.status(400).send("Class doesn't exist")
+    if (!c) throw new Error("Class not found")
     else res.send(c)
-  } catch (e) { return next(e) }
+  } catch (e) { console.log(e); next(e) }
 })
 
 // get a class's assignments
 router.get('/teacher/assignments/:custom_class_id', teacherCheck, async (req, res, next) => {
   const assignments = await Assignment.find({ class_id: req.params.custom_class_id, teacher_id: req.userId })
-  if (!assignments) res.status(400).send("No assignments found")
+  if (!assignments) throw new Error("No assignments found")
   else res.send(assignments)
 })
 
@@ -98,9 +98,9 @@ router.post('/class', teacherCheck, async (req, res, next) => {
         let newClass = await Class.create(req.body)
         res.send(newClass)
       }
-      catch (e) { return next(e) }
+      catch (e) { next(e) }
     }
-  } catch (e) { return next(e) }
+  } catch (e) { next(e) }
 })
 
 // create an assignment
@@ -170,12 +170,19 @@ router.post('/user', async function(req, res) {
 router.delete('/class/:custom_id', teacherCheck, async (req, res, next) => {
   try {
     let c = await Class.findOne({ teacher_id: req.userId, custom_id: req.params.custom_id })
-    if (!c) res.status(400).send("Class not found")
+    if (!c) throw new Error("Class not found")
     else {
       await c.remove()
       res.send("Successfully deleted")
     } 
   } catch (e) { console.log(e); next(e) }
+})
+
+// error handler
+router.use(function(err, req, res, next) {
+  console.log(err)
+  res.status(err.status || 500)
+  res.send(err)
 })
 
 // serve all routes with the /api prefix

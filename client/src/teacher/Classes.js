@@ -33,22 +33,11 @@ class Classes extends Component {
       [name]: value
     });
   }
-
-<<<<<<< HEAD
-  async createClass() {
-    let res = await axios.post('class', {
-      name: this.state.name, custom_id: this.state.custom_id
-    }, { headers: getHeader() })
-    if (res.data._id) {
-      let updated = this.state.classes.concat(res.data)
-      this.setState({ classes: updated })
-    }
-=======
+  
   deleteClass(id, i) {
     let updated = this.state.classes
     updated.splice(i, 1)
     this.setState({ classes: updated })
->>>>>>> master
   }
 
   async createClass() {

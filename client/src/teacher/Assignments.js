@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router';
+import { Redirect, Link } from 'react-router-dom';
 import { getHeader, isLoggedIn } from '../auth';
 import axios from 'axios';
 import './Classes.css';
@@ -47,12 +47,14 @@ class Assignments extends Component {
       if (res.data._id) {
         let updated = this.state.assignments.concat(res.data)
         this.setState({ assignments: updated })
+        this.setState({ name: "", type: "", points_possible: 0 })
       }
     }
 
     render () {
       return (
         <div> 
+          <Link to="/teacher/classes"> Back to Classes </Link>
           <h2 className="mt-2 mb-2"> { this.state.classData.name } ({ this.state.classData.custom_id }) - Assignments </h2> 
 
           <div className="classes container mb-2"> 

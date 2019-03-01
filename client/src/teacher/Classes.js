@@ -49,6 +49,7 @@ class Classes extends Component {
     if (res.data._id) {
       let updated = this.state.classes.concat(res.data)
       this.setState({ classes: updated })
+      this.setState({ name: "", custom_id: "" })
     }
   }
 

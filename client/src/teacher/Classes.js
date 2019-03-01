@@ -33,10 +33,12 @@ class Classes extends Component {
       [name]: value
     });
   }
-  
-  deleteClass(id, i) {
+
+  async deleteClass(id, i) {
+    console.log(id)
     let updated = this.state.classes
     updated.splice(i, 1)
+    await axios.delete('/class/' + id, { headers: getHeader() })
     this.setState({ classes: updated })
   }
 
@@ -56,17 +58,17 @@ class Classes extends Component {
         <h2 className="mt-2 mb-2"> Classes </h2> 
         <div className="classes container mb-2"> 
           <div className="header row py-1">
-            <div className="col"> Name </div> 
-            <div className="col"> Identifier </div> 
-            <div className="col"> Actions </div> 
+            <div className="col-4"> Name </div> 
+            <div className="col-4"> Identifier </div> 
+            <div className="col-4"> Actions </div> 
           </div>
           { this.state.classes.map((c, i) => {
             return (
               <div className="class row py-2" key={c._id}>
-                <div className="col"> { c.name } </div>
-                <div className="col"> { c.custom_id } </div> 
-                <div className="col"> 
-                  <a href="#" onClick={this.deleteClass(c.custom_id, i)}>Delete</a>
+                <div className="col-4"> <Link to={ '/teacher/class/' + c.custom_id }>{ c.name }</Link></div>
+                <div className="col-4"> { c.custom_id } </div> 
+                <div className="col-4"> 
+                  <a href="#" onClick={() => this.deleteClass(c.custom_id, i) }>Delete</a>
                 </div> 
               </div>
             )
@@ -74,7 +76,7 @@ class Classes extends Component {
 
           <div className="class row py-2">
             <input 
-              className="form-control col" 
+              className="form-control col-4" 
               name="name"
               type="text" 
               placeholder="New class..."
@@ -82,18 +84,18 @@ class Classes extends Component {
               onChange={this.handleInputChange} 
             />
             <input 
-              className="form-control col" 
+              className="form-control col-4" 
               name="custom_id"
               type="text" 
               placeholder="E.G. CSCI101"
               value={this.state.custom_id} 
               onChange={this.handleInputChange} 
             />
+            <div className="col-4">
+              <div className="btn btn-primary" onClick={this.createClass}> Create </div>
+            </div>
           </div> 
-
         </div>
-
-        <div className="btn btn-primary" onClick={this.createClass}> Create </div>
 
       </div>
     )

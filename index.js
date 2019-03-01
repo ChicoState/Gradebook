@@ -170,15 +170,15 @@ router.post('/user', async function(req, res) {
 
 /* ===== DELETE ROUTES ===== */
 
-router.delete('/class/:custom_id', teacherCheck, async (req, res) => {
+router.delete('/class/:custom_id', teacherCheck, async (req, res, next) => {
   try {
-    let c = await Class.findOne({ custom_id: req.params.custom_id })
-    if (req.userId != c.teacher_id) res.send("This isn't your class")
+    let c = await Class.findOne({ teacher_id: req.userId, custom_id: req.params.custom_id })
+    if (!c) res.status(400).send("Class not found")
     else {
       await c.remove()
       res.send("Successfully deleted")
     } 
-  } catch (e) { next(e) }
+  } catch (e) { console.log(e); next(e) }
 })
 
 // serve all routes with the /api prefix

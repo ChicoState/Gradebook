@@ -1,14 +1,14 @@
-.form-control {
+.classes {
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.classes .form-control {
   border: none;
   margin-bottom: 0;
   padding: 0;
   border-radius: 0;
   padding-left: 15px;
-}
-
-.classes {
-  border-radius: 3px;
-  overflow: hidden;
 }
 
 .classes .header {

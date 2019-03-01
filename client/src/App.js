@@ -59,7 +59,7 @@ class App extends React.Component {
               <Route path="/login" component={Login} />
               <Route exact path="/teacher" component={Teacher} />
               <Route path="/teacher/classes" component={Classes} />
-              <Route path="/teacher/assignments/:classId" component={Assignments} />
+              <Route path="/teacher/class/:custom_id" component={Assignments} />
               <Route path="/account" component={Account} />
             </div>
           </div>

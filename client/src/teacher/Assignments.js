@@ -19,7 +19,7 @@ class Assignments extends Component {
     }
 
     async componentDidMount() {
-	const classId = this.props.match.params.classId
+	const classId = this.props.match.params.custom_id
 	
 	const assignments = await axios.get(`teacher/assignments/${classId}`, { headers: getHeader() })
 	this.setState({ assignments: assignments.data })  

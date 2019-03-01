@@ -69,14 +69,20 @@ router.get('/teacher/classes', teacherCheck, async (req, res, next) => {
   } catch (e) { next(e) }
 })
 
+// get a class
+router.get('/class/:custom_id', teacherCheck, async (req, res, next) => {
+  try {
+    let c = await Class.findOne({ teacher_id: req.userId, custom_id: req.params.custom_id })
+    if (!c) res.status(400).send("Class doesn't exist")
+    else res.send(c)
+  } catch (e) { return next(e) }
+})
+
 // get a class's assignments
-router.get("/teacher/assignments/:classId", teacherCheck, async (req, res, next) => {
-    try {
-        const assignments = await Assignment.find({ class_id: req.params.classId });
-        res.send(assignments);
-    } catch(e) {
-        res.send([]);//next(e);
-    }
+router.get('/teacher/assignments/:custom_class_id', teacherCheck, async (req, res, next) => {
+  const assignments = await Assignment.find({ class_id: req.params.custom_class_id, teacher_id: req.userId })
+  if (!assignments) res.status(400).send("No assignments found")
+  else res.send(assignments)
 })
 
 /* ===== POST ROUTES ===== */
@@ -92,26 +98,17 @@ router.post('/class', teacherCheck, async (req, res, next) => {
         let newClass = await Class.create(req.body)
         res.send(newClass)
       }
-      catch (e) { next(e) }
+      catch (e) { return next(e) }
     }
-  } catch (e) { next(e) }
+  } catch (e) { return next(e) }
 })
 
 // create an assignment
-router.post("/assignment", teacherCheck, async (req, res, next) => {
-    try {
-        const exists = await Assignment.findOne({ name: req.body.name })
-        if (exists) {
-            res.send("Assignment already exists");
-        } else {
-            const newAssignment = await Assignment.create(req.body);
-            //newAssignment.class_id = req.classId;
-            await newAssignment.save();
-            res.send(newAssignment)
-        }
-    } catch (e) {
-        next(e);
-    }
+router.post('/assignment', teacherCheck, async (req, res, next) => {
+  let newAssignment = await Assignment.create(req.body)
+  newAssignment.teacher_id = req.userId
+  await newAssignment.save()
+  res.send(newAssignment)
 })
 
 // login route

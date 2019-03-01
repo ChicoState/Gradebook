@@ -2,6 +2,7 @@ let mongoose = require('mongoose')
 
 let AssignmentSchema = mongoose.Schema({
   class_id: String,
+  teacher_id: String, 
   name: String, 
   pointsPossible: Number, 
   type: String

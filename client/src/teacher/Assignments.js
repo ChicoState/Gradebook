@@ -39,7 +39,7 @@ class Assignments extends Component {
 	let res = await axios.post('assignment', {
 	    name: this.state.name,
 	    type: this.state.type,
-	    points_possible: this.points_possible,
+	    pointsPossible: this.state.points_possible,
 	    class_id: this.props.match.params.classId
 	}, { headers: getHeader() })
 	if (res.data._id) {
@@ -63,7 +63,7 @@ class Assignments extends Component {
 			    <div className="class row py-2" key={c._id}>
 			    <div className="col"> { c.name } </div>
 			    <div className="col"> { c.type } </div>
-			    <div className="col"> { c.points_possible } </div> 
+			    <div className="col"> { c.pointsPossible } </div> 
 			    </div>
 		    )
 		})}

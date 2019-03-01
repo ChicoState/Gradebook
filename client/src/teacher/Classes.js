@@ -16,6 +16,7 @@ class Classes extends Component {
 
     this.handleInputChange = this.handleInputChange.bind(this)
     this.createClass = this.createClass.bind(this)
+    this.deleteClass = this.deleteClass.bind(this)
   }
 
   async componentDidMount() {
@@ -31,6 +32,12 @@ class Classes extends Component {
     this.setState({
       [name]: value
     });
+  }
+
+  deleteClass(id, i) {
+    let updated = this.state.classes
+    updated.splice(i, 1)
+    this.setState({ classes: updated })
   }
 
   async createClass() {
@@ -51,12 +58,16 @@ class Classes extends Component {
           <div className="header row py-1">
             <div className="col"> Name </div> 
             <div className="col"> Identifier </div> 
+            <div className="col"> Actions </div> 
           </div>
-          { this.state.classes.map((c) => {
+          { this.state.classes.map((c, i) => {
             return (
               <div className="class row py-2" key={c._id}>
                 <div className="col"> { c.name } </div>
                 <div className="col"> { c.custom_id } </div> 
+                <div className="col"> 
+                  <a href="#" onClick={this.deleteClass(c.custom_id, i)}>Delete</a>
+                </div> 
               </div>
             )
           })}

@@ -25,7 +25,7 @@ class App extends React.Component {
 
           <nav className="mb-3 navbar navbar-dark bg-dark">
             <div className="navbar-brand">
-              <Link to="/"> GradeBook <i class="fas fa-book-open"></i></Link>
+              <Link to="/"> GradeBook <i className="fas fa-book-open"></i></Link>
             </div> 
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
               { !this.state.loggedIn &&  

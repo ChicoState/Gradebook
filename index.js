@@ -17,6 +17,7 @@ const cors = require('cors')
 // import mongoose models
 let User = require('./models/user')
 let Class = require('./models/class')
+const Assignment = require('./models/assignment')
 
 // import auth middleware 
 let { authCheck, teacherCheck } = require('./auth')
@@ -68,6 +69,16 @@ router.get('/teacher/classes', teacherCheck, async (req, res, next) => {
   } catch (e) { next(e) }
 })
 
+// get a class's assignments
+router.get("/teacher/assignments/:classId", teacherCheck, async (req, res, next) => {
+    try {
+        const assignments = await Assignment.find({ class_id: req.params.classId });
+        res.send(assignments);
+    } catch(e) {
+        res.send([]);//next(e);
+    }
+})
+
 /* ===== POST ROUTES ===== */
 
 // create a class
@@ -82,6 +93,23 @@ router.post('/class', teacherCheck, async (req, res, next) => {
       res.send(newClass)
     }
   } catch (e) { next(e) }
+})
+
+// create an assignment
+router.post("/assignment", teacherCheck, async (req, res, next) => {
+    try {
+        const exists = await Assignment.findOne({ name: req.body.name })
+        if (exists) {
+            res.send("Assignment already exists");
+        } else {
+            const newAssignment = await Assignment.create(req.body);
+            //newAssignment.class_id = req.classId;
+            await newAssignment.save();
+            res.send(newAssignment)
+        }
+    } catch (e) {
+        next(e);
+    }
 })
 
 // login route

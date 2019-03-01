@@ -87,10 +87,12 @@ router.post('/class', teacherCheck, async (req, res, next) => {
     let exists = await Class.findOne({ custom_id: req.body.custom_id })
     if (exists) res.send("Class already exists")
     else {
-      let newClass = await Class.create(req.body)
-      newClass.teacher_id = req.userId
-      await newClass.save()
-      res.send(newClass)
+      req.body.teacher_id = req.userId
+      try { 
+        let newClass = await Class.create(req.body)
+        res.send(newClass)
+      }
+      catch (e) { next(e) }
     }
   } catch (e) { next(e) }
 })
@@ -149,7 +151,6 @@ router.post('/user', async function(req, res) {
     // hash password
     var hashedPassword = bcrypt.hashSync(req.body.password, 8)
 
-    console.log(req.body)
     let newUser = await User.create({
       password: hashedPassword,
       email: req.body.email,
@@ -166,6 +167,19 @@ router.post('/user', async function(req, res) {
       .send({ auth: true, token: token });
   }
 }); 
+
+/* ===== DELETE ROUTES ===== */
+
+router.delete('/class/:custom_id', teacherCheck, async (req, res) => {
+  try {
+    let c = await Class.findOne({ custom_id: req.params.custom_id })
+    if (req.userId != c.teacher_id) res.send("This isn't your class")
+    else {
+      await c.remove()
+      res.send("Successfully deleted")
+    } 
+  } catch (e) { next(e) }
+})
 
 // serve all routes with the /api prefix
 app.use('/api', router)

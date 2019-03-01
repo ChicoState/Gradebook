@@ -16,6 +16,7 @@ class Classes extends Component {
 
     this.handleInputChange = this.handleInputChange.bind(this)
     this.createClass = this.createClass.bind(this)
+    this.deleteClass = this.deleteClass.bind(this)
   }
 
   async componentDidMount() {
@@ -31,6 +32,23 @@ class Classes extends Component {
     this.setState({
       [name]: value
     });
+  }
+
+<<<<<<< HEAD
+  async createClass() {
+    let res = await axios.post('class', {
+      name: this.state.name, custom_id: this.state.custom_id
+    }, { headers: getHeader() })
+    if (res.data._id) {
+      let updated = this.state.classes.concat(res.data)
+      this.setState({ classes: updated })
+    }
+=======
+  deleteClass(id, i) {
+    let updated = this.state.classes
+    updated.splice(i, 1)
+    this.setState({ classes: updated })
+>>>>>>> master
   }
 
   async createClass() {
@@ -51,12 +69,16 @@ class Classes extends Component {
           <div className="header row py-1">
             <div className="col"> Name </div> 
             <div className="col"> Identifier </div> 
+            <div className="col"> Actions </div> 
           </div>
-          { this.state.classes.map((c) => {
+          { this.state.classes.map((c, i) => {
             return (
               <div className="class row py-2" key={c._id}>
-                    <Link to={"/teacher/assignments/" + c.custom_id.toString()} ><div className="col"> { c.name } </div></Link>
+                <div className="col"> { c.name } </div>
                 <div className="col"> { c.custom_id } </div> 
+                <div className="col"> 
+                  <a href="#" onClick={this.deleteClass(c.custom_id, i)}>Delete</a>
+                </div> 
               </div>
             )
           })}

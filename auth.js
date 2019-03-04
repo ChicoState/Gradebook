@@ -6,7 +6,6 @@ let User = require('./models/user')
 let secret = process.env.TOKEN_SECRET
 
 function authCheck(req, res, next) {
-  
   var header_token = req.headers['x-access-token']
   var cookie_token = req.cookies['csrf_token']
 
@@ -20,16 +19,18 @@ function authCheck(req, res, next) {
       return res.status(403).send({ auth: false, message: 'Failed to authenticate token.' })
     }
     req.userId = decoded.id
+
     next()
   })
 
 }
 
 async function teacherCheck(req, res, next) {
-  authCheck(req, res, next)
-  let user = await User.findById(req.userId)
-  if (user.student) return res.status(403).send({ auth: false, message: 'You are not a teacher.' })
-  next()
+  try {
+    let user = await User.findById(req.userId)
+    if (!!user.student) return res.status(403).send({ auth: false, message: 'You are not a teacher.' })
+    next()  
+  } catch (e) { console.log(e); res.status(500).send(e) }
 }
 
 module.exports = { authCheck, teacherCheck }

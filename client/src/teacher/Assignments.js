@@ -66,7 +66,9 @@ class Assignments extends Component {
             { this.state.assignments.map((c) => {
                 return (
                   <div className="class row py-2" key={c._id}>
-                  <div className="col"> { c.name } </div>
+                  <div className="col">
+                    <Link to={'/teacher/assignment/' + c._id }>{ c.name }</Link>
+                  </div>
                   <div className="col"> { c.type } </div>
                   <div className="col"> { c.pointsPossible } </div> 
                   </div>
@@ -97,7 +99,6 @@ class Assignments extends Component {
                 value={this.state.points_possible} 
                 onChange={this.handleInputChange} 
               />
-              <input type="hidden" value="csci100" />
             </div> 
 
           </div>

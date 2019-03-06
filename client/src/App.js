@@ -6,6 +6,7 @@ import Student from './student.js'
 import Teacher from './Teach.js'
 import Classes from './teacher/Classes.js'
 import Assignments from './teacher/Assignments.js'
+import Grades from './teacher/Grades.js'
 import Account from './Account.js'
 import './App.css';
 
@@ -58,11 +59,11 @@ class App extends React.Component {
               <Route exact path="/" component={Home} />
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
-              <Route exact path="/teacher" component={Teacher} />
               <Route path="/teacher/classes" component={Classes} />
               <Route path="/teacher/class/:custom_id" component={Assignments} />
 	      <Route exact path="/student" component={Student} />
-	      <Route path="/student/classes" component={Classes} />
+              <Route path="/student/classes" component={Classes} />
+              <Route path="/teacher/assignment/:assignment_id" component={Grades} />
               <Route path="/account" component={Account} />
             </div>
           </div>

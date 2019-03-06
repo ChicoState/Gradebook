@@ -17,6 +17,7 @@ const cors = require('cors')
 // import mongoose models
 let User = require('./models/user')
 let Class = require('./models/class')
+let Grade = require('./models/grade')
 const Assignment = require('./models/assignment')
 
 // import auth middleware 
@@ -62,7 +63,7 @@ router.get('/me', authCheck, async (req, res) => {
 })
 
 // get a teacher's classes
-router.get('/teacher/classes', teacherCheck, async (req, res, next) => {
+router.get('/teacher/classes', [authCheck, teacherCheck], async (req, res, next) => {
   try {
     let classes = await Class.find({ teacher_id: req.userId })
     res.send(classes)
@@ -70,45 +71,78 @@ router.get('/teacher/classes', teacherCheck, async (req, res, next) => {
 })
 
 // get a class
-router.get('/class/:custom_id', teacherCheck, async (req, res, next) => {
+router.get('/class/:custom_id', [authCheck, teacherCheck], async (req, res, next) => {
   try {
     let c = await Class.findOne({ teacher_id: req.userId, custom_id: req.params.custom_id })
     if (!c) throw new Error("Class not found")
     else res.send(c)
-  } catch (e) { console.log(e); next(e) }
+  } catch (e) { next(e) }
 })
 
 // get a class's assignments
-router.get('/teacher/assignments/:custom_class_id', teacherCheck, async (req, res, next) => {
+router.get('/teacher/assignments/:custom_class_id', [authCheck, teacherCheck], async (req, res, next) => {
   const assignments = await Assignment.find({ class_id: req.params.custom_class_id, teacher_id: req.userId })
   if (!assignments) throw new Error("No assignments found")
   else res.send(assignments)
 })
 
+// get a class's assignments
+router.get('/teacher/assignment/:assignment_id', [authCheck, teacherCheck], async (req, res, next) => {
+  try {
+    const assignments = await Assignment.findOne({ _id: req.params.assignment_id })
+    if (!assignments) throw new Error("Assignment not found")
+    else res.send(assignments)
+  } catch (e) { next(e) }
+})
+
+// get an assignment's grades 
+router.get('/teacher/assignment/:assignment_id/grades', [authCheck, teacherCheck], async (req, res, next) => {
+  try {
+    const assignment = await Assignment.findOne({ _id: req.params.assignment_id })
+    if (!assignment) throw new Error("Assignment not found")
+    else if (assignment.teacher_id != req.userId) throw new Error("This isn't your assignment")
+    let grades = await Grade.find({ assignment_id: assignment._id })
+    res.send(grades)
+  } catch (e) { next(e) }
+})
+
 /* ===== POST ROUTES ===== */
 
 // create a class
-router.post('/class', teacherCheck, async (req, res, next) => {
+router.post('/class', [authCheck, teacherCheck], async (req, res, next) => {
   try {
-    let exists = await Class.findOne({ custom_id: req.body.custom_id })
-    if (exists) res.send("Class already exists")
+    let exists = await Class.findOne({ custom_id: req.body.custom_id, teacher_id: req.userId })
+    if (exists) { res.send("Class already exists") }
     else {
       req.body.teacher_id = req.userId
       try { 
         let newClass = await Class.create(req.body)
-        res.send(newClass)
+        return res.send(newClass)
       }
       catch (e) { next(e) }
     }
-  } catch (e) { next(e) }
+  } catch (e) {  next(e) }
 })
 
 // create an assignment
-router.post('/assignment', teacherCheck, async (req, res, next) => {
+router.post('/assignment', [authCheck, teacherCheck], async (req, res, next) => {
   let newAssignment = await Assignment.create(req.body)
   newAssignment.teacher_id = req.userId
   await newAssignment.save()
   res.send(newAssignment)
+})
+
+// create a grade
+router.post('/assignment/:assignment_id/grade', [authCheck, teacherCheck], async (req, res, next) => {
+  try {
+    let assignment = await Assignment.findById(req.params.assignment_id)
+    if (!assignment) throw new Error("No such assignment")
+    else if (assignment.teacher_id != req.userId) throw new Error("You don't own this assignment")
+    let newGrade = await Grade.create(req.body)
+    newGrade.assignment_id = req.params.assignment_id
+    await newGrade.save()
+    res.send(newGrade)
+  } catch (e) { next(e) }
 })
 
 // login route
@@ -167,10 +201,10 @@ router.post('/user', async function(req, res) {
 
 /* ===== DELETE ROUTES ===== */
 
-router.delete('/class/:custom_id', teacherCheck, async (req, res, next) => {
+router.delete('/class/:custom_id', [authCheck, teacherCheck], async (req, res, next) => {
   try {
     let c = await Class.findOne({ teacher_id: req.userId, custom_id: req.params.custom_id })
-    if (!c) throw new Error("Class not found")
+    if (!c) { throw new Error("Class not found") }
     else {
       await c.remove()
       res.send("Successfully deleted")

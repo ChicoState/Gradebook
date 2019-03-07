@@ -1,0 +1,27 @@
+.classes {
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.classes .form-control {
+  border: none;
+  margin-bottom: 0;
+  padding: 0;
+  border-radius: 0;
+  padding-left: 15px;
+}
+
+.classes .header {
+  text-transform: uppercase;
+  font-weight: 500;
+  background: #343A40;
+  color: white;
+}
+
+.classes .class {
+  border-bottom: 1px solid #B5CFEF;
+}
+
+.classes .class:last-child {
+  border-bottom: none;
+}

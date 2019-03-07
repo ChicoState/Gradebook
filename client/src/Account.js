@@ -24,10 +24,10 @@ class Account extends Component {
 				<div> Your email: {this.state.user.email} </div>
 				<div> 
 				{ !this.state.user.student && ( 
-					<Link to="/teacher/classes">Your Classes <i class="fas fa-chalkboard-teacher"></i> </Link>
+					<Link to="/user/classes">Your Classes <i class="fas fa-chalkboard-teacher"></i> </Link>
 				)}
 				{this.state.user.student && ( 
-					<Link to="/student/classes">Your Class Grades<i class="fas fa-chalkboard-student"></i> </Link>
+					<Link to="/user/classes">Your Class Grades<i class="fas fa-chalkboard-student"></i> </Link>
 				)}
 				</div>
 				</div>

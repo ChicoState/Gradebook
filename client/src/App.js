@@ -64,7 +64,7 @@ class App extends React.Component {
 	            <Route exact path="/student" component={Student} />
               <Route path="/user/classes" component={Classes} />
               <Route path="/user/class/:custom_id" component={Assignments} />
-	      <Route exact path="/student" component={Student} />
+	            <Route exact path="/student" component={Student} />
               <Route path="/student/classes" component={Classes} />
               <Route path="/user/assignment/:assignment_id" component={Grades} />
               <Route path="/account" component={Account} />

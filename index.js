@@ -63,7 +63,7 @@ router.get('/me', authCheck, async (req, res) => {
 })
 
 // get a teacher's classes
-router.get('/teacher/classes', [authCheck, teacherCheck], async (req, res, next) => {
+router.get('/user/classes', [authCheck, teacherCheck], async (req, res, next) => {
   try {
     let classes = await Class.find({ teacher_id: req.userId })
     res.send(classes)
@@ -80,14 +80,14 @@ router.get('/class/:custom_id', [authCheck, teacherCheck], async (req, res, next
 })
 
 // get a class's assignments
-router.get('/teacher/assignments/:custom_class_id', [authCheck, teacherCheck], async (req, res, next) => {
+router.get('/user/assignments/:custom_class_id', [authCheck, teacherCheck], async (req, res, next) => {
   const assignments = await Assignment.find({ class_id: req.params.custom_class_id, teacher_id: req.userId })
   if (!assignments) throw new Error("No assignments found")
   else res.send(assignments)
 })
 
 // get a class's assignments
-router.get('/teacher/assignment/:assignment_id', [authCheck, teacherCheck], async (req, res, next) => {
+router.get('/user/assignment/:assignment_id', [authCheck, teacherCheck], async (req, res, next) => {
   try {
     const assignments = await Assignment.findOne({ _id: req.params.assignment_id })
     if (!assignments) throw new Error("Assignment not found")
@@ -96,7 +96,7 @@ router.get('/teacher/assignment/:assignment_id', [authCheck, teacherCheck], asyn
 })
 
 // get an assignment's grades 
-router.get('/teacher/assignment/:assignment_id/grades', [authCheck, teacherCheck], async (req, res, next) => {
+router.get('/user/assignment/:assignment_id/grades', [authCheck, teacherCheck], async (req, res, next) => {
   try {
     const assignment = await Assignment.findOne({ _id: req.params.assignment_id })
     if (!assignment) throw new Error("Assignment not found")

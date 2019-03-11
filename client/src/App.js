@@ -3,9 +3,9 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Signup from './Signup.js'
 import Login from './Login.js'
 import Student from './Student.js'
-import Classes from './teacher/Classes.js'
-import Assignments from './teacher/Assignments.js'
-import Grades from './teacher/Grades.js'
+import Classes from './user/Classes.js'
+import Assignments from './user/Assignments.js'
+import Grades from './user/Grades.js'
 import Account from './Account.js'
 import './App.css';
 
@@ -58,11 +58,15 @@ class App extends React.Component {
               <Route exact path="/" component={Home} />
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
+
               <Route path="/teacher/classes" component={Classes} />
               <Route path="/teacher/class/:custom_id" component={Assignments} />
 	            <Route exact path="/student" component={Student} />
+              <Route path="/user/classes" component={Classes} />
+              <Route path="/user/class/:custom_id" component={Assignments} />
+	      <Route exact path="/student" component={Student} />
               <Route path="/student/classes" component={Classes} />
-              <Route path="/teacher/assignment/:assignment_id" component={Grades} />
+              <Route path="/user/assignment/:assignment_id" component={Grades} />
               <Route path="/account" component={Account} />
             </div>
           </div>

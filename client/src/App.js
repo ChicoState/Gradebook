@@ -60,7 +60,7 @@ class App extends React.Component {
               <Route path="/login" component={Login} />
               <Route path="/teacher/classes" component={Classes} />
               <Route path="/teacher/class/:custom_id" component={Assignments} />
-	      <Route exact path="/student" component={Student} />
+	            <Route exact path="/student" component={Student} />
               <Route path="/student/classes" component={Classes} />
               <Route path="/teacher/assignment/:assignment_id" component={Grades} />
               <Route path="/account" component={Account} />

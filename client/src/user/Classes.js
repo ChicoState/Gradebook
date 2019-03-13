@@ -11,7 +11,8 @@ class Classes extends Component {
     this.state = {
       name: "", 
       custom_id: "", 
-      classes: []
+      classes: [],
+      user: {}
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -22,6 +23,10 @@ class Classes extends Component {
   async componentDidMount() {
     let classes = await axios.get('user/classes', { headers: getHeader() })
     this.setState({ classes: classes.data })  
+    // let user = await axios.get('http://localhost:3993/api/me', { headers: getHeader() })
+    // console.log("Await ",user.student)
+    // this.setState({ user: user.data })
+    console.log("This state student", this.state.user.student)
   }
 
   handleInputChange(event) {
@@ -53,28 +58,55 @@ class Classes extends Component {
     }
   }
 
+
+
   render () {
-    return (
+    const foo = this.props.state
+    console.log(foo)
+    const isStudent = this.state.user.student;
+    console.log(this.state.user, isStudent)
+    if (isStudent){
+      console.log("IS STUDENT")
+    return(
       <div> 
+      <h2 className="mt-2 mb-2"> Classes </h2> 
+      <div className="classes container mb-2"> 
+        <div className="header row py-1">
+          <div className="col-4"> Name </div> 
+          <div className="col-4"> Identifier </div> 
+          <div className="col-4"> Actions </div> 
+        </div>
+        { this.state.classes.map((c, i) => {
+          return (
+            <div className="class row py-2" key={c._id}>
+              <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link></div>
+              <div className="col-4"> { c.custom_id } </div>  
+            </div>
+          )
+        })}
+      </div>
+    </div>
+    )          
+    }
+    else if(!isStudent){
+      console.log("NOT STUDENT")
+      return(
+        <div> 
         <h2 className="mt-2 mb-2"> Classes </h2> 
         <div className="classes container mb-2"> 
           <div className="header row py-1">
             <div className="col-4"> Name </div> 
             <div className="col-4"> Identifier </div> 
-            {/* <div className="col-4"> Actions </div>  
-          //removed so students could not add classes to their schedules
-          */}
+            <div className="col-4"> Actions </div> 
           </div>
           { this.state.classes.map((c, i) => {
             return (
               <div className="class row py-2" key={c._id}>
                 <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link></div>
                 <div className="col-4"> { c.custom_id } </div> 
-                {/* <div className="col-4"> 
+                <div className="col-4"> 
                   <a href="#" onClick={() => this.deleteClass(c.custom_id, i) }>Delete</a>
-                </div>  
-                //removed so students could not add classes to their schedules
-                */}
+                </div> 
               </div>
             )
           })}
@@ -96,16 +128,14 @@ class Classes extends Component {
               value={this.state.custom_id} 
               onChange={this.handleInputChange} 
             />
-            {/* <div className="col-4">
+            <div className="col-4">
               <div className="btn btn-primary" onClick={this.createClass}> Create </div>
-            </div> 
-            //removed this so students would not be able to add classes to their schedule
-            */} 
+            </div>
           </div> 
         </div>
-
       </div>
-    )
+      )
+    }
   }
 }
 

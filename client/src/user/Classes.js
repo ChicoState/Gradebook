@@ -12,8 +12,7 @@ class Classes extends Component {
       name: "", 
       custom_id: "", 
       classes: []
-    }
-
+	}
     this.handleInputChange = this.handleInputChange.bind(this)
     this.createClass = this.createClass.bind(this)
     this.deleteClass = this.deleteClass.bind(this)
@@ -55,7 +54,7 @@ class Classes extends Component {
 
   render () {
     return (
-      <div> 
+	    <div> 
         <h2 className="mt-2 mb-2"> Classes </h2> 
         <div className="classes container mb-2"> 
           <div className="header row py-1">
@@ -69,7 +68,7 @@ class Classes extends Component {
                 <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link></div>
                 <div className="col-4"> { c.custom_id } </div> 
                 <div className="col-4"> 
-                  <a href="#" onClick={() => this.deleteClass(c.custom_id, i) }>Delete</a>
+                  <a href="#" onClick={() => this.deleteClass(c.custom_id, i) }>Delete</a> 
                 </div> 
               </div>
             )
@@ -93,7 +92,9 @@ class Classes extends Component {
               onChange={this.handleInputChange} 
             />
             <div className="col-4">
-              <div className="btn btn-primary" onClick={this.createClass}> Create </div>
+	    
+              <div className="btn btn-primary" onClick={this.createClass}> Create </div> 
+	    
             </div>
           </div> 
         </div>

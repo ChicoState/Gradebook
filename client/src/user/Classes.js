@@ -23,9 +23,9 @@ class Classes extends Component {
   async componentDidMount() {
     let classes = await axios.get('user/classes', { headers: getHeader() })
     this.setState({ classes: classes.data })  
-    // let user = await axios.get('http://localhost:3993/api/me', { headers: getHeader() })
-    // console.log("Await ",user.student)
-    // this.setState({ user: user.data })
+    let user = await axios.get('http://localhost:3993/api/me', { headers: getHeader() })
+    console.log("Await ",user.student)
+    this.setState({ user: user.data })
     console.log("This state student", this.state.user.student)
   }
 
@@ -61,8 +61,6 @@ class Classes extends Component {
 
 
   render () {
-    const foo = this.props.state
-    console.log(foo)
     const isStudent = this.state.user.student;
     console.log(this.state.user, isStudent)
     if (isStudent){

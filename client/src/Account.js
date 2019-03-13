@@ -12,7 +12,7 @@ class Account extends Component {
 	}
 
 	async componentDidMount() {
-		let user = await axios.get('http://localhost:3993/api/me', { headers: getHeader() })
+		let user = await axios.get('api/me', { headers: getHeader() })
 		this.setState({ user: user.data })
 	}
 

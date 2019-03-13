@@ -97,7 +97,6 @@ class Classes extends Component {
             </div>
           </div> 
         </div>
-
       </div>
     )
   }

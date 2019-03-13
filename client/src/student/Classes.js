@@ -60,7 +60,7 @@ class Classes extends Component {
           <div className="header row py-1">
             <div className="col-4"> Name </div> 
             <div className="col-4"> Identifier </div> 
-            <div className="col-4"> Actions </div> 
+            {/* <div className="col-4"> Actions </div>  */}
           </div>
           { this.state.classes.map((c, i) => {
             return (
@@ -91,9 +91,9 @@ class Classes extends Component {
               value={this.state.custom_id} 
               onChange={this.handleInputChange} 
             />
-            <div className="col-4">
+            {/* <div className="col-4">
               <div className="btn btn-primary" onClick={this.createClass}> Create </div>
-            </div>
+            </div> */}
           </div> 
         </div>
 

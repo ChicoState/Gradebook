@@ -21,12 +21,17 @@ class Classes extends Component {
   }
 
   async componentDidMount() {
-    let classes = await axios.get('user/classes', { headers: getHeader() })
+    let classes 
+    try {
+      classes = await axios.get('user/classes', { headers: getHeader() })
+    } catch (e) {
+      classes = []
+      console.log(e)
+    }
     this.setState({ classes: classes.data })  
+
     let user = await axios.get('/me', { headers: getHeader() })
-    console.log("Await ",user.student)
     this.setState({ user: user.data })
-    console.log("This state student", this.state.user.student)
   }
 
   handleInputChange(event) {
@@ -58,36 +63,36 @@ class Classes extends Component {
     }
   }
 
-
-
   render () {
-    const isStudent = this.state.user.student;
-    console.log(this.state.user, isStudent)
-    if (isStudent){
-      console.log("IS STUDENT")
-    return(
-      <div> 
-      <h2 className="mt-2 mb-2"> Classes </h2> 
-      <div className="classes container mb-2"> 
-        <div className="header row py-1">
-          <div className="col-4"> Name </div> 
-          <div className="col-4"> Identifier </div> 
-          <div className="col-4"> Actions </div> 
+    console.log(this.state.user)
+    const isStudent = this.state.user.student
+
+    if (!this.state.user.hasOwnProperty('student')) return (
+      <div> Something went wrong! </div> )
+    else if (isStudent) {
+      return(
+        <div> 
+        <h2 className="mt-2 mb-2"> Classes </h2> 
+        <div className="classes container mb-2"> 
+          <div className="header row py-1">
+            <div className="col-4"> Name </div> 
+            <div className="col-4"> Identifier </div> 
+            <div className="col-4"> Actions </div> 
+          </div>
+          { this.state.classes.map((c, i) => {
+            return (
+              <div className="class row py-2" key={c._id}>
+                <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link></div>
+                <div className="col-4"> { c.custom_id } </div>  
+              </div>
+            )
+          })}
         </div>
-        { this.state.classes.map((c, i) => {
-          return (
-            <div className="class row py-2" key={c._id}>
-              <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link></div>
-              <div className="col-4"> { c.custom_id } </div>  
-            </div>
-          )
-        })}
       </div>
-    </div>
-    )          
+      )          
     }
     else if(!isStudent){
-      console.log("NOT STUDENT")
+      console.log("Teacher")
       return(
         <div> 
         <h2 className="mt-2 mb-2"> Classes </h2> 

@@ -9,10 +9,11 @@ class Signup extends Component {
     super(props);
     this.state = {
       name: '', 
-      email: '', 
+      email: '',
       password: '',
+      custom_id: '',	
       student: false, 
-      message: "", 
+      message: "",
       signedUp: false
     }
 
@@ -23,7 +24,7 @@ class Signup extends Component {
   handleInputChange(event) {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
+    const name = target.name;  
 
     this.setState({
       [name]: value
@@ -81,6 +82,19 @@ class Signup extends Component {
             onChange={this.handleInputChange}
           />
         </div>
+	    
+        { this.state.student && (
+	  <div>
+          <label> ID: </label>
+          <input 
+            className="form-control" 
+            type="text" 
+            name="custom_id" 
+            placeholder="University ID"
+            value={this.state.custom_id} 
+            onChange={this.handleInputChange} 
+          /></div>)
+        }
 
         <input 
           type="submit" 

@@ -25,10 +25,10 @@ let { authCheck, teacherCheck } = require('./auth')
 
 // connect to mongoDB database
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
-.catch((err) => { 
-  console.log("Error connecting to database:")
-  console.log(err) 
-});
+    .catch((err) => { 
+	console.log("Error connecting to database:")
+	console.log(err) 
+    });
 
 let port = 3993
 
@@ -56,167 +56,202 @@ app.use(cookieParser())
 
 // get your own profile data
 router.get('/me', authCheck, async (req, res) => {
-  try {
-    let user = await User.findById(req.userId)
-    res.send(user)
-  } catch (e) { res.send(e) }
+    try {
+	let user = await User.findById(req.userId)
+	res.send(user)
+    } catch (e) { res.send(e) }
 })
 
 // get a teacher's classes
 router.get('/user/classes', [authCheck, teacherCheck], async (req, res, next) => {
-  try {
-    let classes = await Class.find({ teacher_id: req.userId })
-    res.send(classes)
-  } catch (e) { next(e) }
+    try {
+	let classes = await Class.find({ teacher_id: req.userId })
+	res.send(classes)
+    } catch (e) { next(e) }
 })
 
 // get a class
 router.get('/class/:custom_id', [authCheck, teacherCheck], async (req, res, next) => {
-  try {
-    let c = await Class.findOne({ teacher_id: req.userId, custom_id: req.params.custom_id })
-    if (!c) throw new Error("Class not found")
-    else res.send(c)
-  } catch (e) { next(e) }
+    try {
+	let c = await Class.findOne({ teacher_id: req.userId, custom_id: req.params.custom_id })
+	if (!c) throw new Error("Class not found")
+	else res.send(c)
+    } catch (e) { next(e) }
 })
 
 // get a class's assignments
 router.get('/user/assignments/:custom_class_id', [authCheck, teacherCheck], async (req, res, next) => {
-  const assignments = await Assignment.find({ class_id: req.params.custom_class_id, teacher_id: req.userId })
-  if (!assignments) throw new Error("No assignments found")
-  else res.send(assignments)
+    const assignments = await Assignment.find({ class_id: req.params.custom_class_id, teacher_id: req.userId })
+    if (!assignments) throw new Error("No assignments found")
+    else res.send(assignments)
 })
 
 // get a class's assignments
 router.get('/user/assignment/:assignment_id', [authCheck, teacherCheck], async (req, res, next) => {
-  try {
-    const assignments = await Assignment.findOne({ _id: req.params.assignment_id })
-    if (!assignments) throw new Error("Assignment not found")
-    else res.send(assignments)
-  } catch (e) { next(e) }
+    try {
+	const assignments = await Assignment.findOne({ _id: req.params.assignment_id })
+	if (!assignments) throw new Error("Assignment not found")
+	else res.send(assignments)
+    } catch (e) { next(e) }
 })
 
 // get an assignment's grades 
 router.get('/user/assignment/:assignment_id/grades', [authCheck, teacherCheck], async (req, res, next) => {
-  try {
-    const assignment = await Assignment.findOne({ _id: req.params.assignment_id })
-    if (!assignment) throw new Error("Assignment not found")
-    else if (assignment.teacher_id != req.userId) throw new Error("This isn't your assignment")
-    let grades = await Grade.find({ assignment_id: assignment._id })
-    res.send(grades)
-  } catch (e) { next(e) }
+    try {
+	const assignment = await Assignment.findOne({ _id: req.params.assignment_id })
+	if (!assignment) throw new Error("Assignment not found")
+	else if (assignment.teacher_id != req.userId) throw new Error("This isn't your assignment")
+	let grades = await Grade.find({ assignment_id: assignment._id })
+	res.send(grades)
+    } catch (e) { next(e) }
+})
+
+// get a class's roster
+router.get('/user/roster/:class_id', [authCheck, teacherCheck], async (req, res, next) => {
+    try {
+	const clss = await Class.findOne({ custom_id: req.params.class_id })
+	if (!clss) throw new Error("Roster not found")
+	let out = []
+	for (const id of clss.roster) {
+	    const user = await User.findOne({custom_id: id})
+	    out.push({name: user.name, custom_id: user.custom_id})
+	}
+	res.send(out)
+    } catch (e) { next(e) }
 })
 
 /* ===== POST ROUTES ===== */
 
 // create a class
 router.post('/class', [authCheck, teacherCheck], async (req, res, next) => {
-  try {
-    let exists = await Class.findOne({ custom_id: req.body.custom_id, teacher_id: req.userId })
-    if (exists) { res.send("Class already exists") }
-    else {
-      req.body.teacher_id = req.userId
-      try { 
-        let newClass = await Class.create(req.body)
-        return res.send(newClass)
-      }
-      catch (e) { next(e) }
-    }
-  } catch (e) {  next(e) }
+    try {
+	let exists = await Class.findOne({ custom_id: req.body.custom_id, teacher_id: req.userId })
+	if (exists) { res.send("Class already exists") }
+	else {
+	    req.body.teacher_id = req.userId
+	    try { 
+		let newClass = await Class.create(req.body)
+		return res.send(newClass)
+	    }
+	    catch (e) { next(e) }
+	}
+    } catch (e) {  next(e) }
 })
 
 // create an assignment
 router.post('/assignment', [authCheck, teacherCheck], async (req, res, next) => {
-  let newAssignment = await Assignment.create(req.body)
-  newAssignment.teacher_id = req.userId
-  await newAssignment.save()
-  res.send(newAssignment)
+    let newAssignment = await Assignment.create(req.body)
+    newAssignment.teacher_id = req.userId
+    await newAssignment.save()
+    res.send(newAssignment)
+})
+
+// add student
+router.post('/roster', [authCheck, teacherCheck], async (req, res, next) => {
+    try {
+	let newRoster = await Class.find({custom_id: req.body.class_id})
+	if (!newRoster) throw new Error("No such Class")
+	let user = await User.findOne({custom_id: req.body.id})
+	if (!user) user = await User.findOne({name: req.body.id})
+	if (!user) throw new Error("No such Student")
+	if (!newRoster.roster) newRoster.roster = []
+	newRoster.push(user)
+	await Class.updateOne({custom_id: req.body.class_id}, {$push: {roster: user.custom_id}})
+	let out = []
+	for (const id of newRoster.roster) {	    
+	    const u = await User.findOne({custom_id: id})
+	    out.push({name: u.name, custom_id: u.custom_id})
+	}
+	res.send(out)
+    } catch (e) { next(e) }
 })
 
 // create a grade
 router.post('/assignment/:assignment_id/grade', [authCheck, teacherCheck], async (req, res, next) => {
-  try {
-    let assignment = await Assignment.findById(req.params.assignment_id)
-    if (!assignment) throw new Error("No such assignment")
-    else if (assignment.teacher_id != req.userId) throw new Error("You don't own this assignment")
-    let newGrade = await Grade.create(req.body)
-    newGrade.assignment_id = req.params.assignment_id
-    await newGrade.save()
-    res.send(newGrade)
-  } catch (e) { next(e) }
+    try {
+	let assignment = await Assignment.findById(req.params.assignment_id)
+	if (!assignment) throw new Error("No such assignment")
+	else if (assignment.teacher_id != req.userId) throw new Error("You don't own this assignment")
+	let newGrade = await Grade.create(req.body)
+	newGrade.assignment_id = req.params.assignment_id
+	await newGrade.save()
+	res.send(newGrade)
+    } catch (e) { next(e) }
 })
 
 // login route
 router.post('/login', async function(req, res) {
 
-  let cookie_domain = 'localhost'
+    let cookie_domain = 'localhost'
 
-  let user = await User.findOne({ email: req.body.email })
-  if (!user) res.send("User not found")
-  else {
-    bcrypt.compare(req.body.password, user.password).then(function(validPassword) {
-      if (!validPassword) res.status(400).send({ auth: false, error: 'Incorrect password.', token: null })
-      else {
-        var token = jwt.sign({ 
-          id: user._id
-        }, process.env.TOKEN_SECRET, { expiresIn: 86400 })
-        res
-          .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true, domain: cookie_domain })
-          .status(200)
-          .send({ auth: true, token: token })
-      }
-    }).catch((err) => {
-      console.log("Error comparing passwords:")
-      console.log(err)
-      res.send({ auth: false, error: 'Something went wrong on the server.', token: null })
-    });
-  }
+    let user = await User.findOne({ email: req.body.email })
+    if (!user) res.send("User not found")
+    else {
+	bcrypt.compare(req.body.password, user.password).then(function(validPassword) {
+	    if (!validPassword) res.status(400).send({ auth: false, error: 'Incorrect password.', token: null })
+	    else {
+		var token = jwt.sign({ 
+		    id: user._id
+		}, process.env.TOKEN_SECRET, { expiresIn: 86400 })
+		res
+		    .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true, domain: cookie_domain })
+		    .status(200)
+		    .send({ auth: true, token: token })
+	    }
+	}).catch((err) => {
+	    console.log("Error comparing passwords:")
+	    console.log(err)
+	    res.send({ auth: false, error: 'Something went wrong on the server.', token: null })
+	});
+    }
 
 });
 
 router.post('/user', async function(req, res) {
-  // make sure a user with that email doesn't already exist
-  let user = await User.findOne({ 'email' : req.body.email })
-  if (user) res.send("User already exists")
+    // make sure a user with that email doesn't already exist
+    let user = await User.findOne({ 'email' : req.body.email })
+    if (user) res.send("User already exists")
 
-  else {
-    // hash password
-    var hashedPassword = bcrypt.hashSync(req.body.password, 8)
+    else {
+	// hash password
+	var hashedPassword = bcrypt.hashSync(req.body.password, 8)
 
-    let newUser = await User.create({
-      password: hashedPassword,
-      email: req.body.email,
-      name: req.body.name, 
-      student: req.body.student
-    })
+	let newUser = await User.create({
+	    password: hashedPassword,
+	    email: req.body.email,
+	    name: req.body.name, 
+	    student: req.body.student,
+	    custom_id: req.body.custom_id
+	})
 
-    // create auth token
-    var token = jwt.sign({ id: newUser._id }, process.env.TOKEN_SECRET, { expiresIn: 86400 });
+	// create auth token
+	var token = jwt.sign({ id: newUser._id }, process.env.TOKEN_SECRET, { expiresIn: 86400 });
 
-    res
-      .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true })
-      .status(200)
-      .send({ auth: true, token: token });
-  }
+	res
+	    .cookie('csrf_token', token, { maxAge: 86400000, httpOnly: true })
+	    .status(200)
+	    .send({ auth: true, token: token });
+    }
 }); 
 
 /* ===== DELETE ROUTES ===== */
 
 router.delete('/class/:custom_id', [authCheck, teacherCheck], async (req, res, next) => {
-  try {
-    let c = await Class.findOne({ teacher_id: req.userId, custom_id: req.params.custom_id })
-    if (!c) { throw new Error("Class not found") }
-    else {
-      await c.remove()
-      res.send("Successfully deleted")
-    } 
-  } catch (e) { console.log(e); next(e) }
+    try {
+	let c = await Class.findOne({ teacher_id: req.userId, custom_id: req.params.custom_id })
+	if (!c) { throw new Error("Class not found") }
+	else {
+	    await c.remove()
+	    res.send("Successfully deleted")
+	} 
+    } catch (e) { console.log(e); next(e) }
 })
 
 // error handler
 router.use(function(err, req, res, next) {
-  console.log(err)
-  res.status(err.status || 500)
-  res.send(err)
+    console.log(err)
+    res.status(err.status || 500)
+    res.send(err)
 })
 
 // serve all routes with the /api prefix

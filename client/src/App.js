@@ -5,6 +5,7 @@ import Login from './Login.js'
 import Student from './Student.js'
 import Classes from './user/Classes.js'
 import Assignments from './user/Assignments.js'
+import Roster from './user/Roster.js'
 import Grades from './user/Grades.js'
 import Account from './Account.js'
 import './App.css';
@@ -60,7 +61,7 @@ class App extends React.Component {
               <Route path="/login" component={Login} />
               <Route path="/teacher/classes" component={Classes} />
               {/* <Route path="/teacher/class/:custom_id" component={Assignments} /> */}
-	            <Route exact path="/student" component={Student} />
+              <Route exact path="/student" component={Student} />
               <Route path="/user/classes" component={Classes} />
               <Route path="/user/class/:custom_id" component={Assignments} />
 	      <Route exact path="/student" component={Student} />

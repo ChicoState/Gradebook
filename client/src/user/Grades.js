@@ -53,7 +53,7 @@ class Grades extends Component {
     render () {
       return (
         <div> 
-          <Link to="/user/classes"> Back to Assignments </Link>
+	      <Link to= {'/user/class/' + this.state.assignment.class_id}> Back to Assignments </Link>
           <h2 className="mt-2 mb-2"> { this.state.assignment.name } ({ this.state.assignment.class_id }) - Grades </h2> 
           <h4> Points Possible: { this.state.assignment.pointsPossible } </h4>
           <div className="classes container mb-2"> 

@@ -126,17 +126,6 @@ class Assignments extends Component {
                 )
             })}
 
-            <div className="class row py-2">
-              <input 
-                className="form-control col" 
-                name="name"
-                type="text" 
-                placeholder="Enter Name or ID"
-                value={this.state.name} 
-                onChange={this.handleInputChange} 
-              />
-	    </div>
-
           </div>
 
 	  

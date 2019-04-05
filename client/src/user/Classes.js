@@ -77,7 +77,7 @@ class Classes extends Component {
         { this.state.classes.map((c, i) => {
           return (
             <div className="class row py-2" key={c._id}>
-              <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link></div>
+              <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link> </div>
               <div className="col-4"> { c.custom_id } </div>  
             </div>
           )
@@ -100,7 +100,10 @@ class Classes extends Component {
           { this.state.classes.map((c, i) => {
             return (
               <div className="class row py-2" key={c._id}>
-                <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link></div>
+                <div className="col-4">
+		  <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link>
+		  <Link to={ '/user/roster/' + c.custom_id }>(roster)</Link>
+		</div>
                 <div className="col-4"> { c.custom_id } </div> 
                 <div className="col-4"> 
                   <a href="#" onClick={() => this.deleteClass(c.custom_id, i) }>Delete</a> 

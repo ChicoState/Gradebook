@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { getHeader, isLoggedIn } from '../auth';
 import axios from 'axios';
-import './Classes.css';
+import './Classes.css'; 
 
 class Assignments extends Component {
   
@@ -40,9 +40,8 @@ class Assignments extends Component {
         id: this.state.id,
         class_id: this.state.classData.custom_id
       }, { headers: getHeader() })
-      if (res.data._id) {
-        let updated = this.state.roster.concat(res.data)
-        this.setState({ roster: updated })
+	if (res) {
+        this.setState({ roster: res.data })
         this.setState({ id: "" })
       }
     }
@@ -51,6 +50,7 @@ class Assignments extends Component {
       return (
         <div> 
           <Link to="/user/classes"> Back to Classes </Link>
+	  <Link to={ '/user/class/' + this.state.classData.custom_id }> Assignments </Link>
           <h2 className="mt-2 mb-2"> { this.state.classData.name } ({ this.state.classData.custom_id }) - Roster </h2> 
 
           <div className="classes container mb-2"> 

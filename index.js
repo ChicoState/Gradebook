@@ -149,17 +149,19 @@ router.post('/assignment', [authCheck, teacherCheck], async (req, res, next) => 
 // add student
 router.post('/roster', [authCheck, teacherCheck], async (req, res, next) => {
     try {
-	let newRoster = await Class.find({custom_id: req.body.class_id})
+	let newRoster = await Class.findOne({custom_id: req.body.class_id})
 	if (!newRoster) throw new Error("No such Class")
 	let user = await User.findOne({custom_id: req.body.id})
 	if (!user) user = await User.findOne({name: req.body.id})
 	if (!user) throw new Error("No such Student")
 	if (!newRoster.roster) newRoster.roster = []
-	newRoster.push(user)
+	newRoster.roster.push(user.custom_id)
 	await Class.updateOne({custom_id: req.body.class_id}, {$push: {roster: user.custom_id}})
 	let out = []
-	for (const id of newRoster.roster) {	    
+	for (const id of newRoster.roster) {
+	    if (!id) continue
 	    const u = await User.findOne({custom_id: id})
+	    if (!u) continue
 	    out.push({name: u.name, custom_id: u.custom_id})
 	}
 	res.send(out)

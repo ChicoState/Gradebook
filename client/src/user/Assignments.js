@@ -12,7 +12,8 @@ class Assignments extends Component {
         name: "",
         type: "",
         points_possible: 0,
-        assignments: [], 
+        assignments: [],
+        roster: [],
         classData: {}
       }
 
@@ -26,7 +27,10 @@ class Assignments extends Component {
       this.setState({ classData: c.data })
       
       const assignments = await axios.get(`user/assignments/${classId}`, { headers: getHeader() })
-      this.setState({ assignments: assignments.data })  
+      this.setState({ assignments: assignments.data })
+	
+      const roster = await axios.get(`user/roster/${classId}`, { headers: getHeader() })
+      this.setState({ roster: roster.data })
     }
 
     handleInputChange(event) {
@@ -105,6 +109,37 @@ class Assignments extends Component {
 
           <div className="btn btn-primary" onClick={this.createAssignment}> Create </div>
 
+              <h2 className="mt-2 mb-2"> Roster </h2>
+	      <Link to={ '/user/roster/' + this.state.classData.custom_id }>edit roster</Link>
+
+          <div className="classes container mb-2"> 
+            <div className="header row py-1">
+            <div className="col"> Name </div>
+            <div className="col"> Id </div>
+            </div>
+            { this.state.roster.map((c) => {
+                return (
+                  <div className="class row py-2" key={c._id}>
+                  <div className="col"> { c.name } </div>
+                  <div className="col"> { c.custom_id } </div> 
+                  </div>
+                )
+            })}
+
+            <div className="class row py-2">
+              <input 
+                className="form-control col" 
+                name="name"
+                type="text" 
+                placeholder="Enter Name or ID"
+                value={this.state.name} 
+                onChange={this.handleInputChange} 
+              />
+	    </div>
+
+          </div>
+
+	  
         </div>
       )
   }

@@ -60,7 +60,7 @@ class Assignments extends Component {
         <div> 
           <Link to="/user/classes"> Back to Classes </Link>
           <h2 className="mt-2 mb-2"> { this.state.classData.name } ({ this.state.classData.custom_id }) - Assignments </h2> 
-
+          <h3> Join Code: { this.state.classData.join_code } </h3>
           <div className="classes container mb-2"> 
             <div className="header row py-1">
             <div className="col"> Name </div>
@@ -109,8 +109,8 @@ class Assignments extends Component {
 
           <div className="btn btn-primary" onClick={this.createAssignment}> Create </div>
 
-              <h2 className="mt-2 mb-2"> Roster </h2>
-	      <Link to={ '/user/roster/' + this.state.classData.custom_id }>edit roster</Link>
+          <h2 className="mt-2 mb-2"> Roster </h2>
+	        <Link to={ '/user/roster/' + this.state.classData.custom_id }>edit roster</Link>
 
           <div className="classes container mb-2"> 
             <div className="header row py-1">

@@ -62,9 +62,7 @@ class Classes extends Component {
 
   render () {
     const isStudent = this.state.user.student;
-    console.log(this.state.user, isStudent)
     if (isStudent){
-      console.log("IS STUDENT")
     return(
       <div> 
       <h2 className="mt-2 mb-2"> Classes </h2> 
@@ -87,7 +85,6 @@ class Classes extends Component {
     )          
     }
     else if(!isStudent){
-      console.log("NOT STUDENT")
       return(
         <div> 
         <h2 className="mt-2 mb-2"> Classes </h2> 

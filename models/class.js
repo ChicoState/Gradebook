@@ -4,7 +4,8 @@ let ClassSchema = mongoose.Schema({
   teacher_id: String, 
   name: String, 
   custom_id: String, // for storing University class code
-  roster: [String]
+  roster: [String], 
+  join_code: String
 })
 
 module.exports = mongoose.model('Class', ClassSchema);

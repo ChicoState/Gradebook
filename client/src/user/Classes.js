@@ -12,7 +12,8 @@ class Classes extends Component {
       name: "", 
       custom_id: "", 
       classes: [],
-      user: {}
+      user: {}, 
+      join_code: ""
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -40,11 +41,15 @@ class Classes extends Component {
   }
 
   async deleteClass(id, i) {
-    console.log(id)
     let updated = this.state.classes
     updated.splice(i, 1)
     await axios.delete('/class/' + id, { headers: getHeader() })
     this.setState({ classes: updated })
+  }
+
+  async joinClass() {
+    await axios.post('/join/' + this.state.join_code, { headers: getHeader() })
+    console.log("joined")
   }
 
   async createClass() {
@@ -88,6 +93,11 @@ class Classes extends Component {
       return(
         <div> 
         <h2 className="mt-2 mb-2"> Classes </h2> 
+        <div> 
+          Add Class
+          <input type="text" name="joinClass" value={this.state.joinCode} placeholder="Join Code" onChange={this.handleInputChange}/>
+          <div className="btn btn-primary" onClick={this.joinClass}> Join </div> 
+        </div>
         <div className="classes container mb-2"> 
           <div className="header row py-1">
             <div className="col-4"> Name </div> 
@@ -98,9 +108,9 @@ class Classes extends Component {
             return (
               <div className="class row py-2" key={c._id}>
                 <div className="col-4">
-		  <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link>
-		  <Link to={ '/user/roster/' + c.custom_id }>(roster)</Link>
-		</div>
+            		  <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link>
+            		  <Link to={ '/user/roster/' + c.custom_id }>(roster)</Link>
+            		</div>
                 <div className="col-4"> { c.custom_id } </div> 
                 <div className="col-4"> 
                   <a href="#" onClick={() => this.deleteClass(c.custom_id, i) }>Delete</a> 

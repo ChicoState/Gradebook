@@ -156,7 +156,10 @@ router.post('/roster', [authCheck, teacherCheck], async (req, res, next) => {
     let user = await User.findOne({custom_id: req.body.id})
     if (!user) user = await User.findOne({name: req.body.id})
     if (!user) throw new Error("No such Student")
-    if (!newRoster.roster) newRoster.roster = []
+    if (!newRoster.roster) newRoster.roster = []	
+    for (const id of newRoster.roster) {
+      if (id == user.custom_id) throw new Error("Student already in roster")
+    }
     newRoster.roster.push(user.custom_id)
     await Class.updateOne({custom_id: req.body.class_id}, {$push: {roster: user.custom_id}})
     let out = []
@@ -258,6 +261,26 @@ router.delete('/class/:custom_id', [authCheck, teacherCheck], async (req, res, n
       res.send("Successfully deleted")
   } 
     } catch (e) { console.log(e); next(e) }
+})
+
+router.delete('/roster/:class_id/:id', async (req, res, next) => {
+    try {
+	let newRoster = await Class.findOne({custom_id: req.params.class_id})
+	if (!newRoster) throw new Error("No such Class")
+	let user = await User.findOne({custom_id: req.params.id})
+	if (!user) user = await User.findOne({name: req.params.id})
+	if (!user) throw new Error("No such Student")
+	if (!newRoster.roster) newRoster.roster = []
+	await Class.updateOne({custom_id: req.params.class_id}, {$pull: {roster: user.custom_id}})
+	let out = []
+	for (const id of newRoster.roster) {
+            if (!id) continue
+            const u = await User.findOne({custom_id: id})
+            if (!u) continue
+	    if (id != user.custom_id) out.push({name: u.name, custom_id: u.custom_id})
+	}
+	res.send(out)
+    } catch (e) { next(e) }
 })
 
 // error handler

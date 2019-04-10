@@ -47,12 +47,9 @@ class Assignments extends Component {
       }
     }
 
-    async deleteStudent() {
+    async deleteStudent(user_id) {
       const classId = this.props.match.params.custom_id
-      let res = await axios.delete(`roster/`, {
-        id: this.state.id,
-        class_id: this.state.classData.custom_id
-      }, { headers: getHeader() })
+      let res = await axios.delete(`roster/` + this.state.classData.custom_id + '/' + user_id, { headers: getHeader() })
 	if (res) {
         this.setState({ roster: res.data })
         this.setState({ id: "" })
@@ -78,7 +75,7 @@ class Assignments extends Component {
                   <div className="col"> { c.name } </div>
                   <div className="col"> { c.custom_id } </div> 
 		  <div className="col"> 
-		    <a href="#" onClick={() => this.deleteStudent(this.state.classData.custom_id) }> Delete</a>
+		    <a href="#" onClick={() => this.deleteStudent(c.custom_id) }> Delete</a>
 			</div>
                   </div>
                 )

@@ -87,7 +87,7 @@ class Assignments extends Component {
                 name="name"
                 type="text" 
                 placeholder="Enter Name or ID"
-                value={this.state.name} 
+                value={this.state.id} 
                 onChange={this.handleInputChange} 
               />
 	    </div>

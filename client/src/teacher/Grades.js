@@ -83,28 +83,43 @@ class Grades extends Component {
           
           <div className="roster mt-3"> 
             <h4> Grades </h4> 
-            { !this.state.loading && this.state.roster.map((s, i) => {
-                return (
-                <div className="d-flex align-items-center" key={s.custom_id}> 
-                  <div className="studentName pl-0"> { s.name } </div>
-                  <div className="mr-2 col-1 id"> { s.custom_id } </div> 
-                  <div className="score col-4"> 
-                    <input 
-                      type="number" 
-                      className="form-control gradeInput mb-0 col-4" 
-                      name="grade"
-                      value={s.grade} 
-                      onChange={this.handleInputChange(i)} 
-                    /> <div className="col-4 gradeTotal"> / { this.state.assignment.pointsPossible} </div> 
-                  </div> 
-                  <div className="percentage mr-2 col-2"> { 100 * s.grade / this.state.assignment.pointsPossible || 0}% </div> 
-                  <div className="col-2"> 
-                    <button className="btn btn-primary btn-small" onClick={() => this.createGrade(s) }> Save </button>
-                  </div> 
-                </div>
-                )
-            })}
-          </div>
+            <table class="table">
+              <thead> 
+                <tr> 
+                  <th>Student</th>
+                  <th>ID</th>
+                  <th>Grade</th>
+                  <th>Percentage</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+              { !this.state.loading && this.state.roster.map((s, i) => {
+                  return (
+                  <tr key={s._id}> 
+                    <td className="studentName pl-0"> { s.name } </td>
+                    <td className="id"> { s.custom_id } </td> 
+                    <td className="score"> 
+                      <div className="d-flex align-items-center">
+                        <input 
+                          type="number" 
+                          className="form-control gradeInput mb-0 col-5 mr-2" 
+                          name="grade"
+                          value={s.grade} 
+                          onChange={this.handleInputChange(i)} 
+                        /> <div className="gradeTotal col-5">/ { this.state.assignment.pointsPossible}</div>
+                      </div>
+                    </td> 
+                    <td className="percentage"> { 100 * s.grade / this.state.assignment.pointsPossible || 0}% </td> 
+                    <td className=""> 
+                      <button className="btn btn-primary btn-small" onClick={() => this.createGrade(s) }> Save </button>
+                    </td> 
+                  </tr>
+                  )
+              })}
+              </tbody>
+            </table>
+          </div> 
 
         </div>
       )

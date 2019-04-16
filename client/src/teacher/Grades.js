@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Redirect, Link } from 'react-router-dom';
 import { getHeader, isLoggedIn } from '../auth';
 import axios from 'axios';
-import './Classes.css';
+import '../Grades.css'
 
 class Grades extends Component {
   
@@ -12,7 +11,9 @@ class Grades extends Component {
         name: "",
         score: 0,
         assignment: {}, 
-        grades: []
+        grades: [], 
+        roster: [], 
+        loading: true
       }
 
       this.handleInputChange = this.handleInputChange.bind(this)
@@ -20,81 +21,90 @@ class Grades extends Component {
     }
 
     async componentDidMount() {
-      const id = this.props.match.params.assignment_id
-      
-      const assignment = await axios.get(`teacher/assignment/${id}`, { headers: getHeader() })
-      this.setState({ assignment: assignment.data })  
+      const assignment_id = this.props.match.params.assignment_id
+      let assignment = (await axios.get('assignment/' + assignment_id, { headers: getHeader() })).data
+      this.setState({ assignment: assignment })
 
-      const grades = await axios.get(`teacher/assignment/${id}/grades`, { headers: getHeader() })
-      this.setState({ grades: grades.data })
+      const roster = await axios.get('course/' + assignment.class_id + '/roster', { headers: getHeader() })
+
+      var grades = (await axios.get('grade/assignment/' + assignment_id, { headers: getHeader() })).data
+
+      for (const student of roster.data) {
+        try {
+          student.grade = grades.length > 0 ?  grades.find((grade) => {
+            console.log(grade.student_id, student._id)
+            if (grade && student)  
+              return grade.student_id == student._id; 
+            else return false
+          }).score : 0
+        } catch(e) {
+          student.grade = 0
+        }
+      }
+
+      this.setState({ grades: grades })
+      this.setState({ roster: roster.data })
+      this.setState({ loading: false })
+
     }
 
-    handleInputChange(event) {
-      const target = event.target;
-      const value = target.type === 'checkbox' ? target.checked : target.value;
-      const name = target.name;
-
-      this.setState( { [name]: value } );
+    handleInputChange = i => event => {
+      const roster = this.state.roster.map((student, j) => {
+        if (i !== j) return student;
+        return { ...student, grade: event.target.value };
+      });
+      this.setState({ roster: roster })
     }
 
-    async createGrade() {
-      if (!this.state.name || !this.state.score) return
-      let res = await axios.post('assignment/' + this.state.assignment._id + '/grade', {
-        student_id: this.state.name,
-        score: this.state.score
+    async createGrade(s) {
+      let res = await axios.post('/grade/' + this.state.assignment.class_id, {
+        score: s.grade, 
+        student_id: s._id, 
+        assignment_id: this.state.assignment._id, 
+        total: this.state.assignment.pointsPossible
       }, { headers: getHeader() })
-      if (res.data._id) {
-        let updated = this.state.grades.concat(res.data)
-        this.setState({ grades: updated })
-        this.setState({ name: "", score: 0 })
+      if (res.data._id) { 
+        let roster = this.state.roster       
+        let student = roster.find((s) => { return s._id == res.data.student_id })
+        if (student) student.grade = res.data.score
+        this.setState({ roster: roster })
       }
     }
 
     render () {
       return (
         <div> 
-          <Link to="/teacher/classes"> Back to Assignments </Link>
-          <h2 className="mt-2 mb-2"> { this.state.assignment.name } ({ this.state.assignment.class_id }) - Grades </h2> 
-          <h4> Points Possible: { this.state.assignment.pointsPossible } </h4>
-          <div className="classes container mb-2"> 
-            <div className="header row py-1">
-            <div className="col"> Name </div>
-            <div className="col"> Score </div>
-            <div className="col"> Percentage </div>
-            </div>
-            { this.state.grades.map((c) => {
-                return (
-                  <div className="class row py-2" key={c._id}>
-                  <div className="col"> { c.student_id } </div>
-                  <div className="col"> { c.score } </div>
-                  <div className="col"> { 100 * c.score / this.state.assignment.pointsPossible }% </div> 
-                  </div>
-                )
-            })}
-
-            <div className="class row py-2">
-              <input 
-                className="form-control col" 
-                name="name"
-                type="text" 
-                placeholder="Student's name"
-                value={this.state.name} 
-                onChange={this.handleInputChange} 
-              />
-              <input 
-                className="form-control col" 
-                name="score"
-                type="number" 
-                placeholder="Score"
-                value={this.state.score} 
-                onChange={this.handleInputChange} 
-              />
-              <div className="col"> { 100 * Number(this.state.score) / Number(this.state.assignment.pointsPossible) }% </div> 
-            </div> 
-
+          <div className="d-flex align-items-center">
+            <h2 className="mr-3"> { this.state.assignment.name } </h2> 
+            <h4> Points Possible: { this.state.assignment.pointsPossible } </h4>
           </div>
 
-          <div className="btn btn-primary" onClick={this.createGrade}> Create </div>
+          <h3> { this.state.assignment.class_id } </h3> 
+          
+          <div className="roster mt-3"> 
+            <h4> Grades </h4> 
+            { !this.state.loading && this.state.roster.map((s, i) => {
+                return (
+                <div className="d-flex align-items-center" key={s.custom_id}> 
+                  <div className="studentName pl-0"> { s.name } </div>
+                  <div className="mr-2 col-1 id"> { s.custom_id } </div> 
+                  <div className="score col-4"> 
+                    <input 
+                      type="number" 
+                      className="form-control gradeInput mb-0 col-4" 
+                      name="grade"
+                      value={s.grade} 
+                      onChange={this.handleInputChange(i)} 
+                    /> <div className="col-4 gradeTotal"> / { this.state.assignment.pointsPossible} </div> 
+                  </div> 
+                  <div className="percentage mr-2 col-2"> { 100 * s.grade / this.state.assignment.pointsPossible || 0}% </div> 
+                  <div className="col-2"> 
+                    <button className="btn btn-primary btn-small" onClick={() => this.createGrade(s) }> Save </button>
+                  </div> 
+                </div>
+                )
+            })}
+          </div>
 
         </div>
       )

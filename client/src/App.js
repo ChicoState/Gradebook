@@ -7,6 +7,7 @@ import Assignments from './user/Assignments.js'
 import Roster from './user/Roster.js'
 import Grades from './user/Grades.js'
 import Account from './Account.js'
+import Rubric from './user/Rubric.js'
 import './App.css';
 
 import { isLoggedIn, logout } from './auth'
@@ -65,6 +66,7 @@ class App extends React.Component {
               <Route path="/user/roster/:custom_id" component={Roster} />
               <Route path="/user/assignment/:assignment_id" component={Grades} />
               <Route path="/account" component={Account} />
+              <Route path="/experimental/rubric" component={Rubric} />
             </div>
           </div>
 

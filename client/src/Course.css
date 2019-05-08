@@ -1,0 +1,14 @@
+.header {
+  text-transform: uppercase;
+  font-size: 13px;
+  border-bottom: 1px solid #E6E6E6;
+}
+
+.joinCode {
+  color: #037EF0;
+}
+
+.assignmentName {
+  font-size: 19px;
+  font-weight: 500;
+}

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router'
 import axios from 'axios'
 import './AuthForm.css'
-import { setToken, isLoggedIn } from './auth'
+import { setToken, isLoggedIn, getUser } from './auth'
 
 class Login extends Component {
 
@@ -11,11 +11,17 @@ class Login extends Component {
     this.state = {
       email: '', 
       password: '', 
-      message: ""
+      message: "",
+      user: ""
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  async componentDidMount() {
+    let user = await getUser()
+    this.setState({ user: user })
   }
 
   handleInputChange(event) {
@@ -34,13 +40,14 @@ class Login extends Component {
     let message = res.data.auth ? "Logged in!" : "Try again!"
     if (res.data.auth) { 
       setToken(res.data.token)
+      let route = res.data.student ? '/student/courses' : '/teacher/courses'
+      this.props.history.push(route)
       window.location.reload()
     }
     this.setState({ message: message })
   }
 
   render() {
-    if (isLoggedIn()) return (<Redirect to="/account" />)
     return (
       <form onSubmit={this.handleSubmit}>
         <h2> Log In </h2>

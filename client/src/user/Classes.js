@@ -12,8 +12,7 @@ class Classes extends Component {
       name: "", 
       custom_id: "", 
       classes: [],
-      user: {}, 
-      join_code: ""
+      user: {}
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -22,12 +21,17 @@ class Classes extends Component {
   }
 
   async componentDidMount() {
-    let classes = await axios.get('user/classes', { headers: getHeader() })
+    let classes 
+    try {
+      classes = await axios.get('user/classes', { headers: getHeader() })
+    } catch (e) {
+      classes = []
+      console.log(e)
+    }
     this.setState({ classes: classes.data })  
+
     let user = await axios.get('/me', { headers: getHeader() })
-    console.log("Await ",user.student)
     this.setState({ user: user.data })
-    console.log("This state student", this.state.user.student)
   }
 
   handleInputChange(event) {
@@ -41,15 +45,11 @@ class Classes extends Component {
   }
 
   async deleteClass(id, i) {
+    console.log(id)
     let updated = this.state.classes
     updated.splice(i, 1)
     await axios.delete('/class/' + id, { headers: getHeader() })
     this.setState({ classes: updated })
-  }
-
-  async joinClass() {
-    await axios.post('/join/' + this.state.join_code, { headers: getHeader() })
-    console.log("joined")
   }
 
   async createClass() {
@@ -63,41 +63,16 @@ class Classes extends Component {
     }
   }
 
-
-
   render () {
-    const isStudent = this.state.user.student;
-    if (isStudent){
-    return(
-      <div> 
-      <h2 className="mt-2 mb-2"> Classes </h2> 
-      <div className="classes container mb-2"> 
-        <div className="header row py-1">
-          <div className="col-4"> Name </div> 
-          <div className="col-4"> Identifier </div> 
-          <div className="col-4"> Actions </div> 
-        </div>
-        { this.state.classes.map((c, i) => {
-          return (
-            <div className="class row py-2" key={c._id}>
-              <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link> </div>
-              <div className="col-4"> { c.custom_id } </div>  
-            </div>
-          )
-        })}
-      </div>
-    </div>
-    )          
-    }
-    else if(!isStudent){
+    console.log(this.state.user)
+    const isStudent = this.state.user.student
+
+    if (!this.state.user.hasOwnProperty('student')) return (
+      <div> Something went wrong! </div> )
+    else if (isStudent) {
       return(
         <div> 
         <h2 className="mt-2 mb-2"> Classes </h2> 
-        <div> 
-          Add Class
-          <input type="text" name="joinClass" value={this.state.joinCode} placeholder="Join Code" onChange={this.handleInputChange}/>
-          <div className="btn btn-primary" onClick={this.joinClass}> Join </div> 
-        </div>
         <div className="classes container mb-2"> 
           <div className="header row py-1">
             <div className="col-4"> Name </div> 
@@ -107,13 +82,33 @@ class Classes extends Component {
           { this.state.classes.map((c, i) => {
             return (
               <div className="class row py-2" key={c._id}>
-                <div className="col-4">
-            		  <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link>
-            		  <Link to={ '/user/roster/' + c.custom_id }>(roster)</Link>
-            		</div>
+                <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link></div>
+                <div className="col-4"> { c.custom_id } </div>  
+              </div>
+            )
+          })}
+        </div>
+      </div>
+      )          
+    }
+    else if(!isStudent){
+      console.log("Teacher")
+      return(
+        <div> 
+        <h2 className="mt-2 mb-2"> Classes </h2> 
+        <div className="classes container mb-2"> 
+          <div className="header row py-1">
+            <div className="col-4"> Name </div> 
+            <div className="col-4"> Identifier </div> 
+            <div className="col-4"> Actions </div> 
+          </div>
+          { this.state.classes.map((c, i) => {
+            return (
+              <div className="class row py-2" key={c._id}>
+                <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link></div>
                 <div className="col-4"> { c.custom_id } </div> 
                 <div className="col-4"> 
-                  <a href="#" onClick={() => this.deleteClass(c.custom_id, i) }>Delete</a> 
+                  <a href="#" onClick={() => this.deleteClass(c.custom_id, i) }>Delete</a>
                 </div> 
               </div>
             )
@@ -137,9 +132,7 @@ class Classes extends Component {
               onChange={this.handleInputChange} 
             />
             <div className="col-4">
-	    
-              <div className="btn btn-primary" onClick={this.createClass}> Create </div> 
-	    
+              <div className="btn btn-primary" onClick={this.createClass}> Create </div>
             </div>
           </div> 
         </div>

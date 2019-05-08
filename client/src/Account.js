@@ -48,5 +48,4 @@ class Account extends Component {
 				}
 
 	}
-
 	export default Account

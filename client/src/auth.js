@@ -1,5 +1,6 @@
 import Cookies from 'universal-cookie'
 import decode from 'jwt-decode'
+import axios from 'axios'
 const cookies = new Cookies()
 
 // get auth header to send in axios API requests
@@ -22,6 +23,11 @@ export function isLoggedIn() {
   const token = getToken() || false
   let authorized = !!token && !isTokenExpired()
   return authorized
+}
+
+export async function getUser() {
+  let user = await axios.get('me', { headers: getHeader() })
+  return user.data
 }
 
 export function resetToken () {

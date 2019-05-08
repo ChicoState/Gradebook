@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { getHeader, isLoggedIn } from '../auth'
+import { getHeader, isLoggedIn, getUser } from '../auth'
 import axios from 'axios'
-import './Classes.css';
+import '../Courses.css';
 
 class Classes extends Component {
 
@@ -11,17 +11,24 @@ class Classes extends Component {
     this.state = {
       name: "", 
       custom_id: "", 
-      classes: []
+      classes: [],
+      user: {}, 
+      join_code: "", 
+      firstName: ""
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
     this.createClass = this.createClass.bind(this)
     this.deleteClass = this.deleteClass.bind(this)
+    this.joinClass = this.joinClass.bind(this)
   }
 
   async componentDidMount() {
-    let classes = await axios.get('teacher/classes', { headers: getHeader() })
-    this.setState({ classes: classes.data })  
+    let courses = await axios.get('/course/list', { headers: getHeader() })
+    this.setState({ classes: courses.data })  
+    let user = await axios.get('/user/me', { headers: getHeader() })
+    this.setState({ user: user.data })
+    this.setState({ firstName: user.data.name.split(' ')[0] })
   }
 
   handleInputChange(event) {
@@ -35,15 +42,19 @@ class Classes extends Component {
   }
 
   async deleteClass(id, i) {
-    console.log(id)
     let updated = this.state.classes
     updated.splice(i, 1)
     await axios.delete('/class/' + id, { headers: getHeader() })
     this.setState({ classes: updated })
   }
 
+  async joinClass() {
+    await axios.post('/join/' + this.state.join_code, {}, { headers: getHeader() })
+    console.log("joined")
+  }
+
   async createClass() {
-    let res = await axios.post('class', {
+    let res = await axios.post('course', {
       name: this.state.name, custom_id: this.state.custom_id
     }, { headers: getHeader() })
     if (res.data._id) {
@@ -56,44 +67,44 @@ class Classes extends Component {
   render () {
     return (
       <div> 
-        <h2 className="mt-2 mb-2"> Classes </h2> 
-        <div className="classes container mb-2"> 
-          <div className="header row py-1">
-            <div className="col-4"> Name </div> 
-            <div className="col-4"> Identifier </div> 
-            <div className="col-4"> Actions </div> 
-          </div>
+        <h2 className="mt-2 mb-3"> Welcome, {this.state.firstName}! </h2> 
+        <h4 className="mb-1"> Your Courses </h4>
+        <div className="courses mb-4"> 
           { this.state.classes.map((c, i) => {
             return (
-              <div className="class row py-2" key={c._id}>
-                <div className="col-4"> <Link to={ '/teacher/class/' + c.custom_id }>{ c.name }</Link></div>
-                <div className="col-4"> { c.custom_id } </div> 
-                <div className="col-4"> 
-                  <a href="#" onClick={() => this.deleteClass(c.custom_id, i) }>Delete</a>
-                </div> 
+              <div className="course d-flex align-items-center py-2" key={c._id}>
+                <a href="#" onClick={() => this.deleteClass(c.custom_id, i) }>
+                    <i className="fas fa-times mr-3"></i>
+                </a> 
+                <div className="mr-3 courseName">
+            		  <Link to={ '/teacher/course/' + c.custom_id }>{ c.name }</Link>
+            		</div>
+                <div className="courseId"> { c.custom_id } </div>                   
               </div>
             )
           })}
-
-          <div className="class row py-2">
+          <h4 className="mt-3"> Create Course </h4> 
+          <div className="course d-flex py-2">
             <input 
-              className="form-control col-4" 
+              className="form-control col-4 mr-2" 
               name="name"
               type="text" 
-              placeholder="New class..."
+              placeholder="New course..."
               value={this.state.name} 
               onChange={this.handleInputChange} 
             />
             <input 
-              className="form-control col-4" 
+              className="form-control col-3" 
               name="custom_id"
               type="text" 
               placeholder="E.G. CSCI101"
               value={this.state.custom_id} 
               onChange={this.handleInputChange} 
             />
-            <div className="col-4">
-              <div className="btn btn-primary" onClick={this.createClass}> Create </div>
+            <div className="col-3">
+      
+              <div className="btn btn-primary" onClick={this.createClass}> Create </div> 
+      
             </div>
           </div> 
         </div>

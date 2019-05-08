@@ -1,23 +1,33 @@
-import React from 'react';
+import React from 'react'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import axios from 'axios'
+
 import Signup from './Signup.js'
 import Login from './Login.js'
-import Student from './Student.js'
-import Classes from './user/Classes.js'
-import Assignments from './user/Assignments.js'
-import Grades from './user/Grades.js'
-import Account from './Account.js'
+
+import StudentCourses from './student/Courses.js'
+
+import TeacherCourses from './teacher/Courses.js'
+import TeacherCourse from './teacher/Course.js'
+import TeacherGrades from './teacher/Grades.js'
+
 import './App.css';
 
-import { isLoggedIn, logout } from './auth'
+import { isLoggedIn, logout, getHeader } from './auth'
 
 class App extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      loggedIn: isLoggedIn()
+      loggedIn: isLoggedIn(), 
+      user: {}
     }
+  }
+
+  async componentDidMount() {
+    let user = await axios.get('/user/me', { headers: getHeader() })
+    this.setState({ user: user })
   }
 
   render() { 
@@ -27,7 +37,7 @@ class App extends React.Component {
 
           <nav className="mb-3 navbar navbar-dark bg-dark">
             <div className="navbar-brand">
-              <Link to="/"> GradeBook <i className="fas fa-book-open"></i></Link>
+              <Link to="/"> GradeBook </Link>
             </div> 
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
               { !this.state.loggedIn &&  
@@ -40,11 +50,15 @@ class App extends React.Component {
                   </li>
                 </div>
               }
-              { this.state.loggedIn && 
+              { this.state.loggedIn && !this.state.user.student  && 
                 <div> 
                   <li className="nav-item">
-                    <Link to="/account">Account</Link>
+                    <Link to="/teacher/courses">Courses</Link>
                   </li>
+                </div> 
+              }
+              { this.state.loggedIn && 
+                <div> 
                   <li className="nav-item">
                     <a href="#" onClick={logout}>Log Out</a>
                   </li>
@@ -55,18 +69,18 @@ class App extends React.Component {
 
           <div className="container">
             <div className="row">
+
               <Route exact path="/" component={Home} />
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
-              <Route path="/teacher/classes" component={Classes} />
-              {/* <Route path="/teacher/class/:custom_id" component={Assignments} /> */}
-	            <Route exact path="/student" component={Student} />
-              <Route path="/user/classes" component={Classes} />
-              <Route path="/user/class/:custom_id" component={Assignments} />
-	            <Route exact path="/student" component={Student} />
-              {/* <Route path="/student/classes" component={Classes} /> */}
-              <Route path="/user/assignment/:assignment_id" component={Grades} />
-              <Route path="/account" component={Account} />
+
+              <Route path="/student/courses" component={StudentCourses} />
+              <Route path="/teacher/courses" component={TeacherCourses} />
+
+              <Route path="/teacher/course/:custom_id" component={TeacherCourse} />
+
+              <Route path="/teacher/assignment/:assignment_id" component={TeacherGrades} />
+
             </div>
           </div>
 
@@ -79,7 +93,12 @@ class App extends React.Component {
 
 const Home = () => {
   return (
-    <div> Hello world! </div>
+    <div> 
+      <h1> Welcome to GradeBook. </h1>
+      <div className="mb-3"> Simple, easy to use grades for students and teachers. </div>
+      <Link to="/login" className="btn btn-light mr-3"> Log In </Link>
+      <Link to="/signup" className="btn btn-primary"> Sign Up </Link>
+    </div>
   )
 }
 

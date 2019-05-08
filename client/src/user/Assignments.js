@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { getHeader, isLoggedIn } from '../auth';
 import axios from 'axios';
-import './Classes.css';
+// import './Classes.css';
 
 class Assignments extends Component {
   
@@ -12,7 +12,8 @@ class Assignments extends Component {
         name: "",
         type: "",
         points_possible: 0,
-        assignments: [], 
+        assignments: [],
+        roster: [],
         classData: {}
       }
 
@@ -26,7 +27,10 @@ class Assignments extends Component {
       this.setState({ classData: c.data })
       
       const assignments = await axios.get(`user/assignments/${classId}`, { headers: getHeader() })
-      this.setState({ assignments: assignments.data })  
+      this.setState({ assignments: assignments.data })
+	
+      const roster = await axios.get(`user/roster/${classId}`, { headers: getHeader() })
+      this.setState({ roster: roster.data })
     }
 
     handleInputChange(event) {
@@ -56,7 +60,7 @@ class Assignments extends Component {
         <div> 
           <Link to="/user/classes"> Back to Classes </Link>
           <h2 className="mt-2 mb-2"> { this.state.classData.name } ({ this.state.classData.custom_id }) - Assignments </h2> 
-
+          <h3> Join Code: { this.state.classData.join_code } </h3>
           <div className="classes container mb-2"> 
             <div className="header row py-1">
             <div className="col"> Name </div>
@@ -105,6 +109,26 @@ class Assignments extends Component {
 
           <div className="btn btn-primary" onClick={this.createAssignment}> Create </div>
 
+          <h2 className="mt-2 mb-2"> Roster </h2>
+	        <Link to={ '/user/roster/' + this.state.classData.custom_id }>edit roster</Link>
+
+          <div className="classes container mb-2"> 
+            <div className="header row py-1">
+            <div className="col"> Name </div>
+            <div className="col"> Id </div>
+            </div>
+            { this.state.roster.map((c) => {
+                return (
+                  <div className="class row py-2" key={c._id}>
+                  <div className="col"> { c.name } </div>
+                  <div className="col"> { c.custom_id } </div> 
+                  </div>
+                )
+            })}
+
+          </div>
+
+	  
         </div>
       )
   }

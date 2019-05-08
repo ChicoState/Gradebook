@@ -94,10 +94,20 @@ class Level extends Component {
 	return (
 		<div>
 		<h5>{this.props.level}</h5>
-		<button type="button" onClick={this.add}>+</button>
-		<button type="button" onClick={this.sub}>-</button>
+                {!this.props.grading &&
+		 (
+			 <div>
+			 <button type="button" onClick={this.add}>+</button>
+			 <button type="button" onClick={this.sub}>-</button>
+			 </div>
+		 )
+		}
 		<p>points: {this.props.points}</p>
-		<button type="button" onClick={this.remove}>remove</button>
+                {!this.props.grading &&
+		 (
+			 <button type="button" onClick={this.remove}>remove</button>
+		 )
+		}
 		</div>
 	)
     }
@@ -108,8 +118,12 @@ class Criteria extends Component {
 
     constructor(props) {
 	super(props);
+	this.state = {
+	    points: 0
+	}
 
 	this.getStandards = this.getStandards.bind(this);
+	this.updatePoints = this.updatePoints.bind(this);
 	this.updateDescription = this.updateDescription.bind(this);
 	this.updateStandard = this.updateStandard.bind(this);
 	this.removeCriteria = this.removeCriteria.bind(this);
@@ -119,11 +133,22 @@ class Criteria extends Component {
 	let s = [];
 	for (let i = 0; i < this.props.standards.length; i++) {
 	    s.push(<Standard
+		   criteria={this.props.criteria}
 		   description={this.props.standards[i]}
+		   updatePoints={this.updatePoints}
 		   updateStandard={this.updateStandard}
-		   index={i} />);
+		   points={this.props.levels[i]}
+		   index={i}
+		   grading={this.props.grading}
+		   />);
 	}
 	return s;
+    }
+
+    updatePoints(value) {
+	let delta = value - this.state.points;
+	this.setState({points: value});
+	this.props.updateTotal(delta);
     }
 
     updateDescription(value) {
@@ -143,8 +168,19 @@ class Criteria extends Component {
 		<tr>
 		<td>
 		<h5>{this.props.criteria}</h5>
-		<Description description={this.props.description} updateDescription={this.updateDescription} />
-		<button type="button" onClick={this.removeCriteria}>remove</button>		
+                {!this.props.grading &&
+		 (
+			 <div>
+			 <Description description={this.props.description} updateDescription={this.updateDescription} />
+			 <button type="button" onClick={this.removeCriteria}>remove</button>
+			 </div>
+		 )
+		}
+                {this.props.grading &&
+		 (
+			 <p>{this.props.description}</p>
+		 )
+		}		
 		</td>
 		{this.getStandards()}
 		</tr>
@@ -158,7 +194,12 @@ class Standard extends Component {
     constructor(props) {
 	super(props);
 
+	this.handleUpdate = this.handleUpdate.bind(this);
 	this.updateDescription = this.updateDescription.bind(this);
+    }
+
+    handleUpdate() {
+	this.props.updatePoints(this.props.points);
     }
     
     updateDescription(value) {
@@ -168,7 +209,20 @@ class Standard extends Component {
     render() {
 	return (
 		<td>
-		<Description description={this.props.description} updateDescription={this.updateDescription} />
+		{!this.props.grading &&
+		 (
+			 <Description description={this.props.description} updateDescription={this.updateDescription} />
+		 )
+		}
+                {this.props.grading &&
+		 (
+			 <div>
+			 <p>{this.props.description}</p>
+			 <p>points: {this.props.points}</p>
+			 <input type="radio" name={this.props.criteria} onChange={this.handleUpdate} />
+			 </div>
+		 )
+		}
 		</td>
 	)
     }
@@ -180,6 +234,7 @@ class Rubric extends Component {
     constructor(props) {
 	super(props);
 	this.state = {
+	    total: 0,
 	    levels: [1, 3, 5],
 	    criteria: [dd, dd, dd],
 	    standards: [[dd, dd, dd], [dd, dd, dd], [dd, dd, dd]]
@@ -187,6 +242,7 @@ class Rubric extends Component {
 
 	this.getLevels = this.getLevels.bind(this);
 	this.getCriteria = this.getCriteria.bind(this);
+	this.updateTotal = this.updateTotal.bind(this);
 	this.updateLevel = this.updateLevel.bind(this);
 	this.updateCriteria = this.updateCriteria.bind(this);
 	this.updateStandard = this.updateStandard.bind(this);
@@ -194,6 +250,7 @@ class Rubric extends Component {
 	this.removeCriteria = this.removeCriteria.bind(this);
 	this.addLevel = this.addLevel.bind(this);
 	this.addCriteria = this.addCriteria.bind(this);
+	this.returnState = this.returnState.bind(this);
     }
     
     getLevels() {
@@ -204,7 +261,8 @@ class Rubric extends Component {
 		   points={this.state.levels[i]}
 		   index={i}
 		   updateLevel={this.updateLevel}
-		   removeLevel={this.removeLevel} /></th>);
+		   removeLevel={this.removeLevel}
+		   grading={true} /></th>);
 	}
 	return l;
     }
@@ -215,13 +273,20 @@ class Rubric extends Component {
 	    c.push(<Criteria
 		   criteria={"Criteria " + (i + 1).toString()}
 		   standards={this.state.standards[i]}
+		   levels={this.state.levels}
 		   index={i}
 		   description={this.state.criteria[i]}
+		   updateTotal={this.updateTotal}
 		   updateDescription={this.updateCriteria}
 		   updateStandard={this.updateStandard}
-		   removeCriteria={this.removeCriteria} />);
+		   removeCriteria={this.removeCriteria}
+		   grading={true} />);
 	}
 	return c;
+    }
+
+    updateTotal(delta) {
+	this.setState({total: this.state.total + delta});
     }
     
     updateLevel(index, points) {
@@ -292,6 +357,10 @@ class Rubric extends Component {
 	s.push(tmp);
 	this.setState({criteria: c, standards: s});
     }
+
+    returnState() {
+	this.props.returnState(this.state);
+    }
     
     render() {
 	return (
@@ -302,8 +371,15 @@ class Rubric extends Component {
 		</thead>
 		<tbody>{this.getCriteria()}</tbody>
 		</table>
-		<button type="button" onClick={this.addLevel}>Add Level</button>
-		<button type="button" onClick={this.addCriteria}>Add Criteria</button>
+                {!true && //!this.props.grading &&
+		 (
+			 <div>
+			 <button type="button" onClick={this.addLevel}>Add Level</button>
+			 <button type="button" onClick={this.addCriteria}>Add Criteria</button>
+			 </div>
+		 )
+		}
+		<p>Total: {this.state.total}</p>
 		</div>
 	)
     }

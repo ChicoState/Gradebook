@@ -1,0 +1,19 @@
+h4 {
+  text-transform: uppercase;
+  font-size: 16px;
+}
+
+.course .badge {
+  font-size: 18px;
+}
+
+.courseName a {
+  display: block;
+  font-size: 23px;
+  font-weight: 500;
+}
+
+.courseId {
+  font-weight: 500;
+  color: grey;
+}

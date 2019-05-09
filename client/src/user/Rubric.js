@@ -4,8 +4,7 @@ import { getHeader, isLoggedIn } from '../auth';
 import axios from 'axios';
 import './Classes.css';
 
-const dd = "Default Description"
-
+const dd = "Default Description";
 
 class Description extends Component {
 
@@ -64,7 +63,7 @@ class Description extends Component {
 		}
 	        </div>
 	)
-    }	
+    }
 
 }
 
@@ -262,7 +261,7 @@ class Rubric extends Component {
 		   index={i}
 		   updateLevel={this.updateLevel}
 		   removeLevel={this.removeLevel}
-		   grading={true} /></th>);
+		   grading={this.props.grading} /></th>);
 	}
 	return l;
     }
@@ -280,7 +279,7 @@ class Rubric extends Component {
 		   updateDescription={this.updateCriteria}
 		   updateStandard={this.updateStandard}
 		   removeCriteria={this.removeCriteria}
-		   grading={true} />);
+		   grading={this.props.grading} />);
 	}
 	return c;
     }
@@ -371,7 +370,7 @@ class Rubric extends Component {
 		</thead>
 		<tbody>{this.getCriteria()}</tbody>
 		</table>
-                {!true && //!this.props.grading &&
+                {!this.props.grading &&
 		 (
 			 <div>
 			 <button type="button" onClick={this.addLevel}>Add Level</button>

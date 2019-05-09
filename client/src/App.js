@@ -6,10 +6,17 @@ import Signup from './Signup.js'
 import Login from './Login.js'
 
 import StudentCourses from './student/Courses.js'
-
 import TeacherCourses from './teacher/Courses.js'
 import TeacherCourse from './teacher/Course.js'
 import TeacherGrades from './teacher/Grades.js'
+
+import Rubric from './user/Rubric.js'
+
+import Classes from './user/Classes.js'
+import Assignments from './user/Assignments.js'
+import Roster from './user/Roster.js'
+import Grades from './user/Grades.js'
+import Account from './Account.js'
 
 import './App.css';
 
@@ -73,6 +80,14 @@ class App extends React.Component {
               <Route exact path="/" component={Home} />
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
+      
+              <Route path="/teacher/classes" component={Classes} />
+              <Route path="/user/classes" component={Classes} />
+              <Route path="/user/class/:custom_id" component={Assignments} />
+              <Route path="/user/roster/:custom_id" component={Roster} />
+              <Route path="/user/assignment/:assignment_id" component={Grades} />
+              <Route path="/account" component={Account} />
+
 
               <Route path="/student/courses" component={StudentCourses} />
               <Route path="/teacher/courses" component={TeacherCourses} />
@@ -80,6 +95,8 @@ class App extends React.Component {
               <Route path="/teacher/course/:custom_id" component={TeacherCourse} />
 
               <Route path="/teacher/assignment/:assignment_id" component={TeacherGrades} />
+      
+              <Route path="/experimental/rubric" component={Rubric} />
 
             </div>
           </div>

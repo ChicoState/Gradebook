@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { getHeader, isLoggedIn } from '../auth'
 import axios from 'axios'
-import './Classes.css';
 
 class Classes extends Component {
 

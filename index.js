@@ -62,6 +62,7 @@ router.post('/assignment', [authCheck, teacherCheck], async (req, res, next) => 
   newAssignment.teacher_id = req.userId
   await newAssignment.save()
   res.send(newAssignment)
+
 })
 
 // create a grade

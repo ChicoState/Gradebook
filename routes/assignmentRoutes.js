@@ -19,7 +19,7 @@ router.get('/:id/grades', [authCheck, teacherCheck], async (req, res, next) => {
 })
 
 // get an assignment
-router.get('/:id', [/*authCheck, teacherCheck*/], async (req, res, next) => {
+router.get('/:id', [authCheck, teacherCheck], async (req, res, next) => {
   try {
     const assignment = await Assignment.findOne({ _id: req.params.id })
     if (!assignment) throw new Error("Assignment not found")

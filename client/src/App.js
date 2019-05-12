@@ -33,7 +33,7 @@ class App extends React.Component {
   render() { 
     return (
       <Router> 
-        <div className="App">
+        <div className="App container">
 
           <nav className="mb-3 navbar">
             <div className="navbar-brand">
@@ -68,7 +68,6 @@ class App extends React.Component {
           </nav> 
 
           <div className="container">
-            <div className="row">
 
               <Route exact path="/" component={Home} />
               <Route path="/signup" component={Signup} />
@@ -81,7 +80,6 @@ class App extends React.Component {
 
               <Route path="/teacher/assignment/:assignment_id" component={TeacherGrades} />
 
-            </div>
           </div>
 
         </div>

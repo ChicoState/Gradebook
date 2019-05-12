@@ -15,7 +15,7 @@ class Classes extends Component {
       user: {}, 
       join_code: "", 
       firstName: "", 
-      colors: ['blue', 'red', 'green', 'yellow']
+      colors: ['blue', 'red', 'green', 'yellow', 'orange']
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -70,11 +70,11 @@ class Classes extends Component {
       <div> 
         <h2 className="mt-2 mb-3"> Welcome, {this.state.firstName} </h2> 
         <h4 className="small mb-1"> Your Courses </h4>
-        <div className="courses row mb-4"> 
+        <div className="courses row mb-2"> 
           { this.state.classes.map((c, i) => {
             return (
-              <div className="course col-md-6 col-12 d-flex align-items-center p-2" key={c._id}>
-                <div className={ "course-container " + this.state.colors[i] }>
+              <div className="course col-md-6 col-12 d-flex align-items-center py-2" key={c._id}>
+                <div className={ "course-container " + this.state.colors[i % 5] }>
 
                   <div className="d-flex">
                     <div className="courseName">
@@ -89,31 +89,35 @@ class Classes extends Component {
               </div>
             )
           })}
-          <h4 className="mt-3 mr-3"> Create Course </h4> 
-          <div className="course d-flex py-2">
-            <input 
-              className="form-control col-4 mr-2" 
-              name="name"
-              type="text" 
-              placeholder="New course..."
-              value={this.state.name} 
-              onChange={this.handleInputChange} 
-            />
-            <input 
-              className="form-control col-3" 
-              name="custom_id"
-              type="text" 
-              placeholder="E.G. CSCI101"
-              value={this.state.custom_id} 
-              onChange={this.handleInputChange} 
-            />
-            <div className="col-3">
-      
-              <div className="btn btn-primary" onClick={this.createClass}> Create </div> 
-      
-            </div>
-          </div> 
         </div>
+        <div class="row">
+          <div class="col-12">
+            <h4 className="mt-3 mr-3 small"> Create Course </h4> 
+            <div className="course d-flex py-2">
+              <input 
+                className="form-control col-4 mr-2" 
+                name="name"
+                type="text" 
+                placeholder="New course..."
+                value={this.state.name} 
+                onChange={this.handleInputChange} 
+              />
+              <input 
+                className="form-control col-3" 
+                name="custom_id"
+                type="text" 
+                placeholder="E.G. CSCI101"
+                value={this.state.custom_id} 
+                onChange={this.handleInputChange} 
+              />
+              <div className="col-3">
+        
+                <div className="btn btn-primary" onClick={this.createClass}> Create </div> 
+        
+              </div>
+            </div>
+          </div>
+        </div> 
       </div>
     )
   }

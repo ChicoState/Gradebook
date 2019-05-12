@@ -1,14 +1,42 @@
-const express = require("express");
-const app = express();
-const bodyParser = require("body-parser");
+const request = require('supertest');
+const app = require('../index.js');
 
-app.use(bodyParser.json());
+describe("Post Valid Assignment", () => {
+  const assignment = {
+    class_id: "EECE 555",
+    teacher_id: "test_teacher_id",
+    name: "Final Project",
+    pointsPossible: 100,
+    type: "Project"
+  };
 
-const assignment = ["EECE 555", "test_teacher_id", "Final Project", 100, "Project"];
+  test("Should Respond 200", async () => {
+  const res = await request(app).post("/api/assignment");
+  expect(res.statusCode).toBe(200);
+  expect(res.body).toBe({
+    class_id: "EECE 555",
+    teacher_id: "test_teacher_id",
+    name: "Final Project",
+    pointsPossible: 100,
+    type: "Project" 
+  });
+  });
+});
 
-router.post("/assignment", async (req, res) => {
-  let newAssignment = await Assignment.create(req.body)
-  newAssignment.teacher_id = req.userId
-  await newAssignment.save()
-  res.send(newAssignment)
+describe("Post Invalid Assignment", () => {
+  const assignment = {
+    class_id: "EECE 555",
+    name: "Final Project",
+  };
+  test("Should Respond 200", async () => {
+  const res = await request(app).post("/api/assignment");
+  expect(res.statusCode).toBe(404);
+  });
+});
+
+describe("Get Invalid Assignment", () => {
+  test("Should Respond 404", async () => {
+  const res = await request(app).get("/api/assignment/not_valid_id");
+  expect(res.statusCode).toBe(404);
+  });
 });

@@ -57,7 +57,7 @@ app.use('/api', routes)
 /* ===== POST ROUTES ===== */
 
 // create an assignment
-router.post('/assignment', [authCheck, teacherCheck], async (req, res, next) => {
+router.post('/assignment', [/*authCheck, teacherCheck*/], async (req, res, next) => {
     let newAssignment = await Assignment.create(req.body)
     newAssignment.teacher_id = req.userId
     await newAssignment.save()

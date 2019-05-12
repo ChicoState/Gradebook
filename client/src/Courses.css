@@ -3,6 +3,33 @@ h4 {
   font-size: 16px;
 }
 
+.small {
+  font-size: 14px;
+}
+
+.course-container {
+  background: linear-gradient(#79BEE8, #71A8DB);
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.course-container.red {
+  background-image: linear-gradient(-180deg, #EB879E 0%, #DB718B 100%);
+}
+
+.course-container.green {
+  background-image: linear-gradient(-180deg, #9CCE9F 0%, #80B688 100%);
+}
+
+.course-container.yellow {
+  background-image: linear-gradient(-180deg, #E6DE87 0%, #DCB46B 100%);
+}
+
+.course-container a {
+  color: white;
+}
+
 .course .badge {
   font-size: 18px;
 }
@@ -15,5 +42,5 @@ h4 {
 
 .courseId {
   font-weight: 500;
-  color: grey;
+  color: rgba(255,255,255, .6);
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { getHeader, isLoggedIn } from '../auth'
 import axios from 'axios'
-import './Courses.css';
+import '../Courses.css';
 
 class Classes extends Component {
 

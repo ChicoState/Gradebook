@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { getHeader, isLoggedIn } from '../auth';
 import axios from 'axios';
-import './Courses.css';
+import '../Courses.css';
 
 const dd = "Default Description"
 

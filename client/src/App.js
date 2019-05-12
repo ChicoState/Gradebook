@@ -37,7 +37,7 @@ class App extends React.Component {
       <Router> 
         <div className="App container">
 
-          <nav className="mb-3 navbar">
+          <nav className="navbar pb-0">
             <div className="navbar-brand">
               <Link to="/"> GradeBook </Link>
             </div> 

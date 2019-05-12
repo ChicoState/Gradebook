@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { getHeader, isLoggedIn } from '../auth'
 import axios from 'axios'
-import './Classes.css';
+import './Courses.css';
 
 class Classes extends Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      name: "", 
-      custom_id: "", 
+      name: "",
+      custom_id: "",
       classes: [],
       user: {}
     }
@@ -21,14 +21,14 @@ class Classes extends Component {
   }
 
   async componentDidMount() {
-    let classes 
+    let classes
     try {
       classes = await axios.get('user/classes', { headers: getHeader() })
     } catch (e) {
       classes = []
       console.log(e)
     }
-    this.setState({ classes: classes.data })  
+    this.setState({ classes: classes.data })
 
     let user = await axios.get('/me', { headers: getHeader() })
     this.setState({ user: user.data })
@@ -63,80 +63,80 @@ class Classes extends Component {
     }
   }
 
-  render () {
+  render() {
     console.log(this.state.user)
     const isStudent = this.state.user.student
 
     if (!this.state.user.hasOwnProperty('student')) return (
-      <div> Something went wrong! </div> )
+      <div> Something went wrong! </div>)
     else if (isStudent) {
-      return(
-        <div> 
-        <h2 className="mt-2 mb-2"> Classes </h2> 
-        <div className="classes container mb-2"> 
-          <div className="header row py-1">
-            <div className="col-4"> Name </div> 
-            <div className="col-4"> Identifier </div> 
-            <div className="col-4"> Actions </div> 
-          </div>
-          { this.state.classes.map((c, i) => {
-            return (
-              <div className="class row py-2" key={c._id}>
-                <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link></div>
-                <div className="col-4"> { c.custom_id } </div>  
-              </div>
-            )
-          })}
-        </div>
-      </div>
-      )          
-    }
-    else if(!isStudent){
-      console.log("Teacher")
-      return(
-        <div> 
-        <h2 className="mt-2 mb-2"> Classes </h2> 
-        <div className="classes container mb-2"> 
-          <div className="header row py-1">
-            <div className="col-4"> Name </div> 
-            <div className="col-4"> Identifier </div> 
-            <div className="col-4"> Actions </div> 
-          </div>
-          { this.state.classes.map((c, i) => {
-            return (
-              <div className="class row py-2" key={c._id}>
-                <div className="col-4"> <Link to={ '/user/class/' + c.custom_id }>{ c.name }</Link></div>
-                <div className="col-4"> { c.custom_id } </div> 
-                <div className="col-4"> 
-                  <a href="#" onClick={() => this.deleteClass(c.custom_id, i) }>Delete</a>
-                </div> 
-              </div>
-            )
-          })}
-
-          <div className="class row py-2">
-            <input 
-              className="form-control col-4" 
-              name="name"
-              type="text" 
-              placeholder="New class..."
-              value={this.state.name} 
-              onChange={this.handleInputChange} 
-            />
-            <input 
-              className="form-control col-4" 
-              name="custom_id"
-              type="text" 
-              placeholder="E.G. CSCI101"
-              value={this.state.custom_id} 
-              onChange={this.handleInputChange} 
-            />
-            <div className="col-4">
-              <div className="btn btn-primary" onClick={this.createClass}> Create </div>
+      return (
+        <div>
+          <h2 className="mt-2 mb-2"> Classes </h2>
+          <div className="classes container mb-2">
+            <div className="header row py-1">
+              <div className="col-4"> Name </div>
+              <div className="col-4"> Identifier </div>
+              <div className="col-4"> Actions </div>
             </div>
-          </div> 
+            {this.state.classes.map((c, i) => {
+              return (
+                <div className="class row py-2" key={c._id}>
+                  <div className="col-4"> <Link to={'/user/class/' + c.custom_id}>{c.name}</Link></div>
+                  <div className="col-4"> {c.custom_id} </div>
+                </div>
+              )
+            })}
+          </div>
         </div>
-      </div>
+      )
+    }
+    else if (!isStudent) {
+      console.log("Teacher")
+      return (
+        <div>
+          <h2 className="mt-2 mb-2"> Classes </h2>
+          <div className="classes container mb-2">
+            <div className="header row py-1">
+              <div className="col-4"> Name </div>
+              <div className="col-4"> Identifier </div>
+              <div className="col-4"> Actions </div>
+            </div>
+            {this.state.classes.map((c, i) => {
+              return (
+                <div className="class row py-2" key={c._id}>
+                  <div className="col-4"> <Link to={'/user/class/' + c.custom_id}>{c.name}</Link></div>
+                  <div className="col-4"> {c.custom_id} </div>
+                  <div className="col-4">
+                    <a href="#" onClick={() => this.deleteClass(c.custom_id, i)}>Delete</a>
+                  </div>
+                </div>
+              )
+            })}
+
+            <div className="class row py-2">
+              <input
+                className="form-control col-4"
+                name="name"
+                type="text"
+                placeholder="New class..."
+                value={this.state.name}
+                onChange={this.handleInputChange}
+              />
+              <input
+                className="form-control col-4"
+                name="custom_id"
+                type="text"
+                placeholder="E.G. CSCI101"
+                value={this.state.custom_id}
+                onChange={this.handleInputChange}
+              />
+              <div className="col-4">
+                <div className="btn btn-primary" onClick={this.createClass}> Create </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )
     }
   }

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router'
+import { Redirect, withRouter } from 'react-router-dom'
 import axios from 'axios'
 import './AuthForm.css'
-import { setToken, isLoggedIn, getUser } from './auth'
+import { setToken, isLoggedIn, getToken } from './auth'
 
 class Login extends Component {
 
@@ -12,16 +12,10 @@ class Login extends Component {
       email: '', 
       password: '', 
       message: "",
-      user: ""
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-  }
-
-  async componentDidMount() {
-    let user = await getUser()
-    this.setState({ user: user })
   }
 
   handleInputChange(event) {
@@ -38,18 +32,22 @@ class Login extends Component {
     event.preventDefault()
     let res  = await axios.post('http://localhost:3993/api/login', this.state)
     let message = res.data.auth ? "Logged in!" : "Try again!"
-    if (res.data.auth) { 
-      setToken(res.data.token)
+    if (res.data.auth) {
       let route = res.data.student ? '/student/courses' : '/teacher/courses'
-      this.props.history.push(route)
-      // window.location.reload()
+      await setToken(res.data.token)
+      console.log(getToken())
+      console.log(route)
+      const { history } = this.props;
+      history.push(route)
+      window.location.reload()
+    } else {
+      this.setState({ message: message })
     }
-    this.setState({ message: message })
   }
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={this.handleSubmit} className="w-50">
         <h2> Log In </h2>
 
         <label> Email: </label>
@@ -87,4 +85,4 @@ class Login extends Component {
   }
 }
 
-export default Login
+export default withRouter(Login)

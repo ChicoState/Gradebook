@@ -14,19 +14,20 @@ export function getToken() {
 }
 
 // set token to cookies 
-export function setToken (token) {
-  cookies.set('token', token, { path: '/' })
+export async function setToken (token) {
+  await cookies.set('token', token, { path: '/' })
 }
 
 // check if user is logged in
 export function isLoggedIn() {
   const token = getToken() || false
+  console.log(token)
   let authorized = !!token && !isTokenExpired()
   return authorized
 }
 
 export async function getUser() {
-  let user = await axios.get('me', { headers: getHeader() })
+  let user = await axios.get('user/me', { headers: getHeader() })
   return user.data
 }
 

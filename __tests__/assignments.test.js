@@ -1,6 +1,17 @@
 const request = require('supertest');
 const app = require('../index.js');
 
+let auth;
+
+describe("User Setup", () => {
+  test("Getting Auth", async () => {
+    const res = await request(app).post("/api/login")
+      .send({ email: 'test', password: 'test' })
+    auth = res.body.token;
+    expect(res.statusCode).toBe(200);
+  });
+});
+
 describe("Post Valid Assignment", () => {
   const assignment = {
     class_id: "Software Engineering",
@@ -11,7 +22,9 @@ describe("Post Valid Assignment", () => {
   };
 
   test("Should Respond 200", async () => {
-    const res = await request(app).post("/api/assignment").send(assignment);
+    const res = await request(app).post("/api/assignment").send(assignment)
+      .set('x-access-token', auth)
+      .set('Cookie', "csrf_token=" + auth);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("name", "Final Project");
   });
@@ -23,14 +36,18 @@ describe("Post Invalid Assignment", () => {
   };
 
   test("Should Respond 500", async () => {
-    const res = await request(app).post("/api/assignment").send(assignment);
+    const res = await request(app).post("/api/assignment").send(assignment)
+      .set('x-access-token', auth)
+      .set('Cookie', "csrf_token=" + auth);
     expect(res.statusCode).toBe(500);
   });
 });
 
 describe("Get Invalid Assignment", () => {
   test("Should Respond 404", async () => {
-    const res = await request(app).get("/api/assignment/not_valid_id");
+    const res = await request(app).get("/api/assignment/not_valid_id")
+      .set('x-access-token', auth)
+      .set('Cookie', "csrf_token=" + auth);
     expect(res.statusCode).toBe(500);
   });
 });

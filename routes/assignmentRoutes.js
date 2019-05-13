@@ -18,6 +18,23 @@ router.get('/:id/grades', [authCheck, teacherCheck], async (req, res, next) => {
   } catch (e) { next(e) }
 })
 
+// get an assignment's avg grade 
+router.get('/:id/avg', [authCheck, teacherCheck], async (req, res, next) => {
+  try {
+    const assignment = await Assignment.findOne({ _id: req.params.id })
+    if (!assignment) throw new Error("Assignment not found")
+    else if (assignment.teacher_id != req.userId) throw new Error("This isn't your assignment")
+    let grades = await Grade.find({ assignment_id: assignment._id })
+    var total = 0 
+    var score = 0
+    for (const grade of grades) {
+      total += grade.total
+      score += grade.score
+    }
+    res.send({ avg: score / total })
+  } catch (e) { next(e) }
+})
+
 // get an assignment
 router.get('/:id', [authCheck, teacherCheck], async (req, res, next) => {
   try {

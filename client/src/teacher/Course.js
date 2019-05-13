@@ -15,7 +15,9 @@ class Course extends Component {
         assignments: [],
         roster: [],
         courseData: {}, 
-        courseId: ""
+        averages: {},
+        courseId: "", 
+        gradeStyles: ['aplus', 'a', 'b', 'c', 'd', 'f']
       }
 
       this.handleInputChange = this.handleInputChange.bind(this)
@@ -31,6 +33,9 @@ class Course extends Component {
       
       const assignments = await axios.get('course/' + courseId + '/assignments', { headers: getHeader() })
       this.setState({ assignments: assignments.data })
+
+      const averages = await axios.get('course/' + courseId + '/assignments/averages', { headers: getHeader() })
+      if (averages.data) this.setState({ averages: averages.data })
   
       const roster = await axios.get('course/' + courseId + '/roster', { headers: getHeader() })
       this.setState({ roster: roster.data })
@@ -62,7 +67,7 @@ class Course extends Component {
       return (
         <div> 
 
-          <div class="d-flex align-items-center">
+          <div className="d-flex align-items-center">
             <div> 
               <h2 className="mt-2 mb-2"> { this.state.courseData.name } </h2>
               <h3 className="mr-2"> { this.state.courseData.custom_id } </h3> 
@@ -88,7 +93,10 @@ class Course extends Component {
                             <Link to={'/teacher/assignment/' + c._id }>{ c.name }</Link>
                           </div>
                           <div className="ml-auto avg">
-                            avg <div className="ml-2 badge badge-primary">90%</div>
+                            avg 
+                            <div className={ "ml-2 badge badge-primary " + this.state.gradeStyles[Math.min(Math.abs(10 - Math.floor(10 * this.state.averages[c._id])), 5)]}>
+                              {Math.round(this.state.averages[c._id] * 1000) / 10 || 0}%
+                            </div>
                           </div>
                         </div>
                         <div className="d-flex col-12">

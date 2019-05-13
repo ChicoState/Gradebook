@@ -5,6 +5,7 @@ var router = express.Router()
 
 var Course = require('../models/course')
 var User = require('../models/user')
+var Grade = require('../models/grade')
 var Assignment = require('../models/assignment')
 
 const ShortUniqueId = require('short-unique-id')
@@ -41,6 +42,29 @@ router.get('/:custom_id', [authCheck, teacherCheck], async (req, res, next) => {
 router.get('/:id/assignments', authCheck, async (req, res, next) => {
   const assignments = await Assignment.find({ class_id: req.params.id })
   res.send(assignments)
+})
+
+// get a course's assignments' averages
+router.get('/:id/assignments/averages', [authCheck, teacherCheck], async (req, res, next) => {
+  try {
+    const assignments = await Assignment.find({ class_id: req.params.id })
+    var averages = {}
+    for (const assignment of assignments) {
+      if (assignment.teacher_id != req.userId) throw new Error("This isn't your assignment")
+      let grades = await Grade.find({ assignment_id: assignment._id })
+      var total = 0 
+      var score = 0
+      for (const grade of grades) {
+        total += grade.total
+        score += grade.score
+      }
+      var avg = score / total
+      averages[assignment._id] = avg
+    }
+    res.send(averages)
+  } catch(e) { 
+    res.status(500).send(e)
+  }
 })
 
 // get a course roster

@@ -14,7 +14,8 @@ class Grades extends Component {
         course: {},
         grades: [], 
         roster: [], 
-        loading: true
+        loading: true,
+        gradeStyles: ['aplus', 'a', 'b', 'c', 'd', 'f']
       }
 
       this.handleInputChange = this.handleInputChange.bind(this)
@@ -132,7 +133,10 @@ class Grades extends Component {
                         />
                       </div>
                     </div> 
-                    <div className="percentage badge badge-primary ml-4"> { 100 * s.grade / this.state.assignment.pointsPossible || 0}% </div> 
+                    {  }
+                    <div className={ "percentage badge badge-primary ml-4 " + this.state.gradeStyles[Math.min(Math.abs(10 - Math.floor(10 * (s.grade / this.state.assignment.pointsPossible))), 5)]}> 
+                      { 100 * s.grade / this.state.assignment.pointsPossible || 0}% 
+                    </div> 
                   </div>
                   )
               })}

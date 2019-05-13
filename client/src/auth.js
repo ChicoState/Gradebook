@@ -21,7 +21,6 @@ export async function setToken (token) {
 // check if user is logged in
 export function isLoggedIn() {
   const token = getToken() || false
-  console.log(token)
   let authorized = !!token && !isTokenExpired()
   return authorized
 }

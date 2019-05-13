@@ -71,7 +71,7 @@ class Courses extends Component {
         </div>
         <div> 
           <h4 className="small"> Add Course </h4> 
-          <div className="input-group w-50">
+          <div className="input-group w-25">
             <input className="form-control" type="text" name="join_code" value={this.state.join_code} placeholder="Join Code" onChange={this.handleInputChange}/>
             <div className="input-group-append">
               <div className="btn btn-primary" onClick={this.joinCourse}> Join </div> 

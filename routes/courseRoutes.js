@@ -38,6 +38,15 @@ router.get('/:custom_id', [authCheck, teacherCheck], async (req, res, next) => {
   } catch (e) { next(e) }
 })
 
+// get a course as a student
+router.get('/student/:custom_id', authCheck, async (req, res, next) => {
+  try {
+    let c = await Course.findOne({ custom_id: req.params.custom_id })
+    if (!c) throw new Error("Course not found")
+    else res.send(c)
+  } catch (e) { next(e) }
+})
+
 // get a course's assignments
 router.get('/:id/assignments', authCheck, async (req, res, next) => {
   const assignments = await Assignment.find({ class_id: req.params.id })
@@ -62,6 +71,21 @@ router.get('/:id/assignments/averages', [authCheck, teacherCheck], async (req, r
       averages[assignment._id] = avg
     }
     res.send(averages)
+  } catch(e) { 
+    res.status(500).send(e)
+  }
+})
+
+// get your grades for a course
+router.get('/:id/grades', authCheck, async (req, res, next) => {
+  try {
+    const assignments = await Assignment.find({ class_id: req.params.id })
+    var grades = {}
+    for (const assignment of assignments) {
+      let grade = await Grade.findOne({ assignment_id: assignment._id })
+      grades[assignment._id] = grade
+    }
+    res.send(grades)
   } catch(e) { 
     res.status(500).send(e)
   }

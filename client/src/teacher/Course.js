@@ -11,7 +11,6 @@ class Course extends Component {
       this.state = {
         name: "",
         type: "",
-        points_possible: undefined,
         assignments: [],
         roster: [],
         courseData: {}, 

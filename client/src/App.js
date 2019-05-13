@@ -6,6 +6,7 @@ import Signup from './Signup.js'
 import Login from './Login.js'
 
 import StudentCourses from './student/Courses.js'
+import StudentCourse from './student/Course.js'
 
 import TeacherCourses from './teacher/Courses.js'
 import TeacherCourse from './teacher/Course.js'
@@ -88,6 +89,7 @@ class App extends React.Component {
               <Route path="/login" component={Login} />
 
               <PrivateRoute path='/student/courses' component={StudentCourses} />
+              <PrivateRoute path='/student/course/:custom_id' component={StudentCourse} />
 
               <PrivateRoute path='/teacher/courses' component={TeacherCourses} />
               <PrivateRoute path='/teacher/course/:custom_id' component={TeacherCourse} />

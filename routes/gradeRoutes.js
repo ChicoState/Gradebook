@@ -51,4 +51,25 @@ router.post('/:course_id', [authCheck, teacherCheck], async (req, res, next) => 
 
 })
 
+// create several grades
+router.post('/list/:course_id', [authCheck, teacherCheck], async (req, res, next) => {
+  let course = await Course.findOne({ custom_id: req.params.course_id })
+
+  if (!course) res.send("Course doesn't exist!")
+  if (course.teacher_id != req.userId) res.status(403).send("Unauthorized")
+
+  try {
+    var grades = []
+    req.body.grades.forEach(async (grade) => {
+      grade.class_id = req.params.course_id
+      let newGrade = await Grade.findOneAndUpdate({ assignment_id: grade.assignment_id, student_id: grade.student_id }, grade, { new: true, upsert: true })
+      grades.push(newGrade)
+    })
+    res.send(grades)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+
+})
+
 module.exports = router

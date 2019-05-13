@@ -1,5 +1,4 @@
 .id {
-  font-size: 12px;
   color: grey;
 }
 
@@ -12,7 +11,6 @@ th {
 .studentName {
   font-size: 18px; 
   font-weight: 500;
-  color: #037EF0;
 }
 
 .gradeInput {
@@ -27,4 +25,27 @@ th {
 
 .gradeInput, .gradeTotal {
   margin: 0;
+}
+
+.grade-label {
+  width: 60px;
+  text-align: center;
+}
+
+.course-title {
+  font-weight: 500;
+}
+
+.points-possible .points {
+  font-weight: 500;
+  font-size: 32px;
+  text-align: right;
+}
+
+.points-possible .label {
+  font-size: 15px;
+}
+
+.percentage.badge {
+  width: 60px;
 }

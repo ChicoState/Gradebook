@@ -11,6 +11,7 @@ class Grades extends Component {
         name: "",
         score: 0,
         assignment: {}, 
+        course: {},
         grades: [], 
         roster: [], 
         loading: true
@@ -26,13 +27,13 @@ class Grades extends Component {
       this.setState({ assignment: assignment })
 
       const roster = await axios.get('course/' + assignment.class_id + '/roster', { headers: getHeader() })
+      const course = await axios.get('course/' + assignment.class_id, { headers: getHeader() })
 
       var grades = (await axios.get('grade/assignment/' + assignment_id, { headers: getHeader() })).data
 
       for (const student of roster.data) {
         try {
           student.grade = grades.length > 0 ?  grades.find((grade) => {
-            console.log(grade.student_id, student._id)
             if (grade && student)  
               return grade.student_id == student._id; 
             else return false
@@ -45,6 +46,7 @@ class Grades extends Component {
       this.setState({ grades: grades })
       this.setState({ roster: roster.data })
       this.setState({ loading: false })
+      this.setState({ course: course.data })
 
     }
 
@@ -71,54 +73,74 @@ class Grades extends Component {
       }
     }
 
+    async createGrades() {
+      var grades = []
+      for (const student of this.state.roster) {
+        var grade = {        
+          score: student.grade, 
+          student_id: student._id, 
+          assignment_id: this.state.assignment._id, 
+          total: this.state.assignment.pointsPossible
+        }
+        grades.push(grade)
+      }
+      let res = await axios.post('/grade/list/' + this.state.assignment.class_id, { grades: grades }, { headers: getHeader() })
+    }
+
     render () {
       return (
         <div> 
           <div className="d-flex align-items-center">
-            <h2 className="mr-3"> { this.state.assignment.name } </h2> 
-            <h4> Points Possible: { this.state.assignment.pointsPossible } </h4>
+
+            <div> 
+              <h2 className="assignment-name"> { this.state.assignment.name } </h2> 
+              <div className="d-flex align-items-center">
+                <div className="course-title mr-3">{ this.state.course.name }</div>
+                { this.state.assignment.class_id }
+              </div>
+            </div>
+
+            <div className="ml-auto points-possible"> 
+              <div className="points">{ this.state.assignment.pointsPossible }</div>
+              <div className="label">points</div>
+            </div>
+
           </div>
 
-          <h3> { this.state.assignment.class_id } </h3> 
-          
           <div className="roster mt-3"> 
-            <h4> Grades </h4> 
-            <table class="table">
-              <thead> 
-                <tr> 
-                  <th>Student</th>
-                  <th>ID</th>
-                  <th>Grade</th>
-                  <th>Percentage</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
+            <div className="container">
+              <div className="row">
+                <h4 className="small">Students</h4> 
+                <h4 className="small ml-auto">Score</h4> 
+                <h4 className="small grade-label ml-4">Grade</h4> 
+              </div> 
               { !this.state.loading && this.state.roster.map((s, i) => {
                   return (
-                  <tr key={s._id}> 
-                    <td className="studentName pl-0"> { s.name } </td>
-                    <td className="id"> { s.custom_id } </td> 
-                    <td className="score"> 
+                  <div className="row my-2 align-items-center" key={i}> 
+                    <div className="studentName d-flex"> 
+                      <div className="mr-2">{ s.name }</div>
+                      <div className="id">({ s.custom_id })</div>
+                     </div>
+                    <div className="score ml-auto"> 
                       <div className="d-flex align-items-center">
                         <input 
                           type="number" 
-                          className="form-control gradeInput mb-0 col-5 mr-2" 
+                          className="form-control gradeInput ml-auto w-50" 
                           name="grade"
                           value={s.grade} 
                           onChange={this.handleInputChange(i)} 
-                        /> <div className="gradeTotal col-5">/ { this.state.assignment.pointsPossible}</div>
+                        />
                       </div>
-                    </td> 
-                    <td className="percentage"> { 100 * s.grade / this.state.assignment.pointsPossible || 0}% </td> 
-                    <td className=""> 
-                      <button className="btn btn-primary btn-small" onClick={() => this.createGrade(s) }> Save </button>
-                    </td> 
-                  </tr>
+                    </div> 
+                    <div className="percentage badge badge-primary ml-4"> { 100 * s.grade / this.state.assignment.pointsPossible || 0}% </div> 
+                  </div>
                   )
               })}
-              </tbody>
-            </table>
+            </div>
+          </div> 
+
+          <div className="d-flex mt-3">
+            <button className="btn btn-primary btn-small ml-auto" onClick={() => this.createGrades() }> Save </button>
           </div> 
 
         </div>

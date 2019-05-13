@@ -35,7 +35,7 @@ router.get('/assignment/:id', [authCheck, teacherCheck, async (req, res, next) =
 }])
 
 // create a grade
-router.post('/:course_id', [authCheck, teacherCheck], async (req, res, next) => {
+router.post('/:course_id', [authCheck, teacherCheck, async (req, res, next) => {
   let course = await Course.findOne({ custom_id: req.params.course_id })
 
   if (!course) res.send("Course doesn't exist!")
@@ -49,10 +49,10 @@ router.post('/:course_id', [authCheck, teacherCheck], async (req, res, next) => 
     res.status(500).send(e)
   }
 
-})
+}])
 
 // create several grades
-router.post('/list/:course_id', [authCheck, teacherCheck], async (req, res, next) => {
+router.post('/list/:course_id', [authCheck, teacherCheck, async (req, res, next) => {
   let course = await Course.findOne({ custom_id: req.params.course_id })
 
   if (!course) res.send("Course doesn't exist!")
@@ -70,6 +70,6 @@ router.post('/list/:course_id', [authCheck, teacherCheck], async (req, res, next
     res.status(500).send(e)
   }
 
-})
+}])
 
 module.exports = router

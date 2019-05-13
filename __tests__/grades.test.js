@@ -12,49 +12,40 @@ describe("User Setup", () => {
   });
 });
 
-describe("Get Invalid Course", () => {
+describe("Get Invalid Grade", () => {
   test("Should Respond 404", async () => {
     const res = await request(app).get("/api/grade/assignment/not_valid_id")
       .set('x-access-token', auth)
-      .set('Cookie', "csrf_token=" + auth);;
+      .set('Cookie', "csrf_token=" + auth);
     expect(res.statusCode).toBe(404);
   });
 });
 
-/*
-
-describe("Post Valid Assignment", () => {
-  const assignment = {
-    class_id: "Software Engineering",
-    teacher_id: "test_teacher_id",
-    name: "Final Project",
-    pointsPossible: 100,
-    type: "Project"
-  };
-
+describe("Get Valid Grade", () => {
   test("Should Respond 200", async () => {
-    const res = await request(app).post("/api/assignment").send(assignment);
+    const res = await request(app).get("/api/grade/assignment/5cd8e7c954b5a00f5234e39d")
+      .set('x-access-token', auth)
+      .set('Cookie', "csrf_token=" + auth);
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("name", "Final Project");
   });
 });
 
-describe("Post Invalid Assignment", () => {
-  const assignment = {
-    pointsPossible: 100
-  };
-
-  test("Should Respond 500", async () => {
-    const res = await request(app).post("/api/assignment").send(assignment);
-    expect(res.statusCode).toBe(500);
+describe("Get Valid Course", () => {
+  test("Should Respond 200", async () => {
+    const res = await request(app).get("/api/grade/YOGA101")
+      .set('x-access-token', auth)
+      .set('Cookie', "csrf_token=" + auth);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("assignment_id", "5cd8f10d6d5d6c121f92bd4f");
+    expect(res.body).toHaveProperty("teacher_id", "5cd8b8ce5bc00f11ba71197d");
   });
 });
 
-describe("Get Invalid Assignment", () => {
-  test("Should Respond 404", async () => {
-    const res = await request(app).get("/api/assignment/not_valid_id");
-    expect(res.statusCode).toBe(500);
+describe("Get Valid Course List", () => {
+  test("Should Respond 200", async () => {
+    const res = await request(app).get("/api/grade/list/YOGA101")
+      .set('x-access-token', auth)
+      .set('Cookie', "csrf_token=" + auth);
+    expect(res.statusCode).toBe(200);
   });
 });
-
-*/

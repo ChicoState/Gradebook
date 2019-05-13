@@ -3,7 +3,7 @@ const app = require('../index.js');
 
 describe("Post Valid Assignment", () => {
   const assignment = {
-    class_id: "EECE 555",
+    class_id: "Software Engineering",
     teacher_id: "test_teacher_id",
     name: "Final Project",
     pointsPossible: 100,
@@ -11,32 +11,26 @@ describe("Post Valid Assignment", () => {
   };
 
   test("Should Respond 200", async () => {
-  const res = await request(app).post("/api/assignment");
-  expect(res.statusCode).toBe(200);
-  expect(res.body).toBe({
-    class_id: "EECE 555",
-    teacher_id: "test_teacher_id",
-    name: "Final Project",
-    pointsPossible: 100,
-    type: "Project" 
-  });
+    const res = await request(app).post("/api/assignment").send(assignment);
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("name", "Final Project");
   });
 });
 
 describe("Post Invalid Assignment", () => {
   const assignment = {
-    class_id: "EECE 555",
-    name: "Final Project",
+    pointsPossible: 100
   };
-  test("Should Respond 200", async () => {
-  const res = await request(app).post("/api/assignment");
-  expect(res.statusCode).toBe(404);
+
+  test("Should Respond 500", async () => {
+    const res = await request(app).post("/api/assignment").send(assignment);
+    expect(res.statusCode).toBe(500);
   });
 });
 
 describe("Get Invalid Assignment", () => {
   test("Should Respond 404", async () => {
-  const res = await request(app).get("/api/assignment/not_valid_id");
-  expect(res.statusCode).toBe(404);
+    const res = await request(app).get("/api/assignment/not_valid_id");
+    expect(res.statusCode).toBe(500);
   });
 });

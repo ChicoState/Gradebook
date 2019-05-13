@@ -37,7 +37,7 @@ describe("Get Valid Course", () => {
       .set('Cookie', "csrf_token=" + auth);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("assignment_id", "5cd8f10d6d5d6c121f92bd4f");
-    expect(res.body).toHaveProperty("teacher_id", "5cd8b8ce5bc00f11ba71197d");
+    expect(res.body).toHaveProperty("teacher_id", "5cd9b58a2bcef724c095c98c");
   });
 });
 

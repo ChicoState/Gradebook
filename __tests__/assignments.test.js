@@ -27,7 +27,7 @@ describe("Post Valid Assignment", () => {
       .set('Cookie', "csrf_token=" + auth);
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("class_id", "Software Engineering");
-    expect(res.body).toHaveProperty("teacher_id", "5cd8c43bd52f61135f02ab82");
+    expect(res.body).toHaveProperty("teacher_id", "5cd9b58a2bcef724c095c98c");
     expect(res.body).toHaveProperty("name", "Final Project");
     expect(res.body).toHaveProperty("pointsPossible", 100);
   });

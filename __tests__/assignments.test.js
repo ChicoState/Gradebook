@@ -47,10 +47,20 @@ describe("Post Invalid Assignment", () => {
 });
 
 describe("Get Invalid Assignment", () => {
-  test("Should Respond 404", async () => {
+  test("Should Respond 500", async () => {
   const res = await request(app).get("/api/assignment/not_valid_id")
     .set('x-access-token', auth)
     .set('Cookie', "csrf_token=" + auth);
   expect(res.statusCode).toBe(500);
+  });
+});
+
+describe("Get Invalid Assignment's Grades", () => {
+  test("Should Respond 500", async () => {
+  const res = await request(app).get("/api/assignment/not_valid_id/grades")
+    .set('x-access-token', auth)
+    .set('Cookie', "csrf_token=" + auth);
+  expect(res.statusCode).toBe(500);
+  expect(res.body).toEqual({});
   });
 });

@@ -6,17 +6,12 @@ import Signup from './Signup.js'
 import Login from './Login.js'
 
 import StudentCourses from './student/Courses.js'
+
 import TeacherCourses from './teacher/Courses.js'
 import TeacherCourse from './teacher/Course.js'
 import TeacherGrades from './teacher/Grades.js'
 
 import Rubric from './user/Rubric.js'
-
-import Classes from './user/Classes.js'
-import Assignments from './user/Assignments.js'
-import Roster from './user/Roster.js'
-import Grades from './user/Grades.js'
-import Account from './Account.js'
 
 import './App.css';
 
@@ -40,9 +35,9 @@ class App extends React.Component {
   render() { 
     return (
       <Router> 
-        <div className="App">
+        <div className="App container">
 
-          <nav className="mb-3 navbar navbar-dark bg-dark">
+          <nav className="navbar pb-0">
             <div className="navbar-brand">
               <Link to="/"> GradeBook </Link>
             </div> 
@@ -75,30 +70,19 @@ class App extends React.Component {
           </nav> 
 
           <div className="container">
-            <div className="row">
 
               <Route exact path="/" component={Home} />
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
-      
-              <Route path="/teacher/classes" component={Classes} />
-              <Route path="/user/classes" component={Classes} />
-              <Route path="/user/class/:custom_id" component={Assignments} />
-              <Route path="/user/roster/:custom_id" component={Roster} />
-              <Route path="/user/assignment/:assignment_id" component={Grades} />
-              <Route path="/account" component={Account} />
-
 
               <Route path="/student/courses" component={StudentCourses} />
+
               <Route path="/teacher/courses" component={TeacherCourses} />
-
               <Route path="/teacher/course/:custom_id" component={TeacherCourse} />
-
               <Route path="/teacher/assignment/:assignment_id" component={TeacherGrades} />
       
               <Route path="/experimental/rubric" component={Rubric} />
 
-            </div>
           </div>
 
         </div>

@@ -32,7 +32,7 @@ router.get('/list', authCheck, async (req, res, next) => {
 router.get('/:custom_id', [authCheck, teacherCheck], async (req, res, next) => {
   try {
     let c = await Course.findOne({ teacher_id: req.userId, custom_id: req.params.custom_id })
-    if (!c) throw new Error("Class not found")
+    if (!c) throw new Error("Course not found")
     else res.send(c)
   } catch (e) { next(e) }
 })

@@ -7,6 +7,12 @@ h4 {
   font-size: 14px;
 }
 
+.percentage {
+  font-size: 25px;
+  color: white;
+  font-weight: 500;
+}
+
 .course-container {
   background: linear-gradient(#79BEE8, #71A8DB);
   width: 100%;

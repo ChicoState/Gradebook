@@ -1,16 +1,22 @@
 const request = require('supertest');
 const app = require('../index.js');
 
-describe("Get Invalid Course", () => {
-  test("Should Respond 404", async () => {
-    const res = await request(app).get("/api/course/");
-    expect(res.statusCode).toBe(404);
+let auth;
+
+describe("User Setup", () => {
+  test("Getting Auth", async () => {
+    const res = await request(app).post("/api/login")
+      .send({ email: 'test', password: 'test' });
+    auth = res.body.token;
+    expect(res.statusCode).toBe(200);
   });
 });
 
 describe("Get Invalid Course", () => {
   test("Should Respond 404", async () => {
-    const res = await request(app).get("/api/grade/not_valid_id");
+    const res = await request(app).get("/api/grade/assignment/not_valid_id")
+      .set('x-access-token', auth)
+      .set('Cookie', "csrf_token=" + auth);;
     expect(res.statusCode).toBe(404);
   });
 });

@@ -8,6 +8,19 @@
   color: #037EF0;
 }
 
+.badge {
+  font-size: 18px;
+}
+
+.avg {
+  font-size: 15px;
+  text-transform: uppercase;
+}
+
+.points {
+  font-size: 14px;
+}
+
 .assignmentName {
   font-size: 19px;
   font-weight: 500;

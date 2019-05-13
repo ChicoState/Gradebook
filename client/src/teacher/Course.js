@@ -71,20 +71,21 @@ class Course extends Component {
 
           <div className="assignments"> 
 
-            <div className="header row py-1">
-              <div className="col-4"> Name </div>
-              <div className="col-3"> Type </div>
-              <div className="col-2"> Points </div>
-            </div>
-
             { this.state.assignments.map((c) => {
                 return (
-                  <div className="row py-2 align-items-center" key={c._id}>
-                    <div className="col-4 assignmentName">
-                      <Link to={'/teacher/assignment/' + c._id }>{ c.name }</Link>
+                  <div className="row py-2" key={c._id}>
+                    <div className="d-flex col-12">
+                      <div className="assignmentName">
+                        <Link to={'/teacher/assignment/' + c._id }>{ c.name }</Link>
+                      </div>
+                      <div className="ml-auto avg">
+                        avg <div className="ml-2 badge badge-primary">90%</div>
+                      </div>
                     </div>
-                    <div className="col-3"> { c.type } </div>
-                    <div className="col-2"> { c.pointsPossible } </div> 
+                    <div className="d-flex col-12">
+                      <div className=""> { c.type } </div>
+                      <div className="ml-auto points"> { c.pointsPossible } points </div> 
+                    </div>
                   </div>
                 )
             })}

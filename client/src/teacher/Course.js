@@ -61,65 +61,82 @@ class Course extends Component {
     render () {
       return (
         <div> 
-          <h2 className="mt-2 mb-2"> { this.state.courseData.name } </h2>
+
           <div class="d-flex align-items-center">
-            <h3 className="mr-2"> { this.state.courseData.custom_id } </h3>  
-            <h4 className="joinCode"> Join Code: { this.state.courseData.join_code } </h4>
-          </div>
-
-          <h4> Assignments </h4>
-
-          <div className="assignments"> 
-
-            { this.state.assignments.map((c) => {
-                return (
-                  <div className="row py-2" key={c._id}>
-                    <div className="d-flex col-12">
-                      <div className="assignmentName">
-                        <Link to={'/teacher/assignment/' + c._id }>{ c.name }</Link>
-                      </div>
-                      <div className="ml-auto avg">
-                        avg <div className="ml-2 badge badge-primary">90%</div>
-                      </div>
-                    </div>
-                    <div className="d-flex col-12">
-                      <div className=""> { c.type } </div>
-                      <div className="ml-auto points"> { c.pointsPossible } points </div> 
-                    </div>
-                  </div>
-                )
-            })}
-
-            <div className="class d-flex py-2">
-              <input 
-                className="form-control col-4 mr-2" 
-                name="name"
-                type="text" 
-                placeholder="New assignment..."
-                value={this.state.name} 
-                onChange={this.handleInputChange} 
-              />
-              <input 
-                className="form-control col-3 mr-2" 
-                name="type"
-                type="text" 
-                placeholder="E.G. Quiz"
-                value={this.state.type} 
-                onChange={this.handleInputChange} 
-              />
-              <input 
-                className="form-control col-2" 
-                name="points_possible"
-                type="number"
-                placeholder="Points"
-                value={this.state.points_possible} 
-                onChange={this.handleInputChange} 
-              />
+            <div> 
+              <h2 className="mt-2 mb-2"> { this.state.courseData.name } </h2>
+              <h3 className="mr-2"> { this.state.courseData.custom_id } </h3> 
+            </div>
+            <div className="ml-auto"> 
+              <h4 className="joinCode">{ this.state.courseData.join_code }</h4>
+              <div className="joinCode-label">Join Code</div>
             </div> 
-
           </div>
 
-          <div className="btn btn-primary btn-small" onClick={this.createAssignment}> Create </div>
+          <div className="container">
+
+            <div className="row">
+
+              <div className="assignments mt-3 col-md-5 col-12 pl-0"> 
+                <h4 className="small"> Assignments </h4>
+
+                { this.state.assignments.map((c) => {
+                    return (
+                      <div className="row py-2" key={c._id}>
+                        <div className="d-flex col-12">
+                          <div className="assignmentName">
+                            <Link to={'/teacher/assignment/' + c._id }>{ c.name }</Link>
+                          </div>
+                          <div className="ml-auto avg">
+                            avg <div className="ml-2 badge badge-primary">90%</div>
+                          </div>
+                        </div>
+                        <div className="d-flex col-12">
+                          <div className=""> { c.type } </div>
+                          <div className="ml-auto points"> { c.pointsPossible } points </div> 
+                        </div>
+                      </div>
+                    )
+                })}
+              </div>
+
+              <div className="col-md-5 offset-md-2 col-12 pr-0 pl-4 d-flex mt-3">
+                <div className="w-75 ml-auto">
+                  <h4 className="small">New Assignment</h4>
+                  <div className="py-2">
+                    <input 
+                      className="form-control mr-2" 
+                      name="name"
+                      type="text" 
+                      placeholder="New assignment..."
+                      value={this.state.name} 
+                      onChange={this.handleInputChange} 
+                    />
+                    <input 
+                      className="form-control" 
+                      name="type"
+                      type="text" 
+                      placeholder="E.G. Quiz"
+                      value={this.state.type} 
+                      onChange={this.handleInputChange} 
+                    />
+                    <input 
+                      className="form-control" 
+                      name="points_possible"
+                      type="number"
+                      placeholder="Points"
+                      value={this.state.points_possible} 
+                      onChange={this.handleInputChange} 
+                    />
+                  </div> 
+                  <div className="d-flex">
+                    <div className="btn btn-primary btn-small" onClick={this.createAssignment}> Create </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
     
         </div>
       )

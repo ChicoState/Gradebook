@@ -98,7 +98,7 @@ class Classes extends Component {
                 className="form-control col-4 mr-2" 
                 name="name"
                 type="text" 
-                placeholder="New course..."
+                placeholder="Course name"
                 value={this.state.name} 
                 onChange={this.handleInputChange} 
               />
@@ -106,7 +106,7 @@ class Classes extends Component {
                 className="form-control col-3" 
                 name="custom_id"
                 type="text" 
-                placeholder="E.G. CSCI101"
+                placeholder="Custom ID (E.G. CSCI101)"
                 value={this.state.custom_id} 
                 onChange={this.handleInputChange} 
               />

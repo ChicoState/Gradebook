@@ -39,7 +39,15 @@ class App extends React.Component {
 
           <nav className="navbar pb-0">
             <div className="navbar-brand">
-              <Link to="/"> GradeBook </Link>
+              { !this.state.loggedIn && 
+                <Link to="/"> GradeBook </Link>
+              }
+              { this.state.loggedIn && !this.state.user.student && 
+                <Link to="/teacher/courses"> GradeBook </Link>
+              } 
+              { this.state.loggedIn && this.state.user.student && 
+                <Link to="/student/courses"> GradeBook </Link>
+              }       
             </div> 
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
               { !this.state.loggedIn &&  
@@ -52,16 +60,9 @@ class App extends React.Component {
                   </li>
                 </div>
               }
-              { this.state.loggedIn && !this.state.user.student  && 
-                <div> 
-                  <li className="nav-item">
-                    <Link to="/teacher/courses">Courses</Link>
-                  </li>
-                </div> 
-              }
               { this.state.loggedIn && 
                 <div> 
-                  <li className="nav-item">
+                  <li className="nav-item mr-0 logout">
                     <a href="#" onClick={logout}>Log Out</a>
                   </li>
                 </div>

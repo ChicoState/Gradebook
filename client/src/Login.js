@@ -42,7 +42,7 @@ class Login extends Component {
       setToken(res.data.token)
       let route = res.data.student ? '/student/courses' : '/teacher/courses'
       this.props.history.push(route)
-      window.location.reload()
+      // window.location.reload()
     }
     this.setState({ message: message })
   }

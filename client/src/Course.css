@@ -6,6 +6,13 @@
 
 .joinCode {
   color: #037EF0;
+  font-size: 24px;
+}
+
+.joinCode-label {
+  font-size: 15px;
+  text-align: right;
+  text-transform: uppercase;
 }
 
 .badge {

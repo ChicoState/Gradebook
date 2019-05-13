@@ -109,7 +109,7 @@ class Grades extends Component {
 
           <div className="roster mt-3"> 
             <div className="container">
-              <div className="row">
+              <div className="row mt-4">
                 <h4 className="small">Students</h4> 
                 <h4 className="small ml-auto">Score</h4> 
                 <h4 className="small grade-label ml-4">Grade</h4> 

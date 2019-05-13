@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 import axios from 'axios'
 
 import Signup from './Signup.js'
@@ -16,6 +16,17 @@ import Rubric from './user/Rubric.js'
 import './App.css';
 
 import { isLoggedIn, logout, getHeader } from './auth'
+
+function PrivateRoute ({component: Component, authed, ...rest}) {
+  return (
+    <Route
+      {...rest}
+      render={(props) => authed === true
+        ? <Component {...props} />
+        : <Redirect to={{pathname: '/login', state: {from: props.location}}} />}
+    />
+  )
+}
 
 class App extends React.Component {
 
@@ -39,7 +50,15 @@ class App extends React.Component {
 
           <nav className="navbar pb-0">
             <div className="navbar-brand">
-              <Link to="/"> GradeBook </Link>
+              { !this.state.loggedIn && 
+                <Link to="/"> GradeBook </Link>
+              }
+              { this.state.loggedIn && !this.state.user.student && 
+                <Link to="/teacher/courses"> GradeBook </Link>
+              } 
+              { this.state.loggedIn && this.state.user.student && 
+                <Link to="/student/courses"> GradeBook </Link>
+              }       
             </div> 
             <ul className="navbar-nav ml-auto mt-2 mt-lg-0">
               { !this.state.loggedIn &&  
@@ -52,16 +71,9 @@ class App extends React.Component {
                   </li>
                 </div>
               }
-              { this.state.loggedIn && !this.state.user.student  && 
-                <div> 
-                  <li className="nav-item">
-                    <Link to="/teacher/courses">Courses</Link>
-                  </li>
-                </div> 
-              }
               { this.state.loggedIn && 
                 <div> 
-                  <li className="nav-item">
+                  <li className="nav-item mr-0 logout">
                     <a href="#" onClick={logout}>Log Out</a>
                   </li>
                 </div>
@@ -75,11 +87,11 @@ class App extends React.Component {
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
 
-              <Route path="/student/courses" component={StudentCourses} />
+              <PrivateRoute authed={this.state.loggedIn} path='/student/courses' component={StudentCourses} />
 
-              <Route path="/teacher/courses" component={TeacherCourses} />
-              <Route path="/teacher/course/:custom_id" component={TeacherCourse} />
-              <Route path="/teacher/assignment/:assignment_id" component={TeacherGrades} />
+              <PrivateRoute authed={this.state.loggedIn} path='/teacher/courses' component={TeacherCourses} />
+              <PrivateRoute authed={this.state.loggedIn} path='/teacher/course/:custom_id' component={TeacherCourse} />
+              <PrivateRoute authed={this.state.loggedIn} path='/teacher/assignment/:assignment_id' component={TeacherGrades} />
       
               <Route path="/experimental/rubric" component={Rubric} />
 
